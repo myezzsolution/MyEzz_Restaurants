@@ -1,0 +1,203 @@
+/* Navbar Component Styles */
+.navbar {
+  position: fixed;
+  left: 0;
+  top: 80px; /* Account for header height */
+  width: 80px;
+  height: calc(100vh - 80px);
+  background-color: #F4F6F8; /* Ceramic white background */
+  border-right: 1px solid #E2E8F0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+}
+
+.navList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.navItem {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.navLink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px; /* Minimum 44px touch target, using 60px for better usability */
+  padding: 8px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #334155; /* Midnight slate color */
+  background-color: transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.navLink::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background-color: rgba(59, 130, 246, 0.1);
+  border-radius: 50%;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+.navLink:hover::before {
+  width: 100px;
+  height: 100px;
+}
+
+.navLink:hover {
+  background-color: #E2E8F0;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.navLink:active {
+  transform: translateY(0) scale(0.98);
+  transition: all 0.1s ease;
+}
+
+.navLink:focus {
+  outline: none;
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.navLink.active {
+  background-color: #3B82F6;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.navLink.active::before {
+  width: 80px;
+  height: 80px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navLink.active:hover {
+  background-color: #2563EB;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+}
+
+.navIcon {
+  margin-bottom: 4px;
+  display: block;
+  color: inherit;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.2s ease;
+}
+
+.navLink:hover .navIcon {
+  transform: scale(1.1);
+}
+
+.navLink:active .navIcon {
+  transform: scale(0.95);
+}
+
+.navText {
+  font-size: 10px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+
+/* Tablet-specific optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .navbar {
+    width: 90px;
+  }
+  
+  .navLink {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .navIcon {
+    /* Icon size is controlled by the size prop in JSX */
+  }
+  
+  .navText {
+    font-size: 11px;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .navLink {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .navLink:hover {
+    transform: none; /* Remove hover animations on touch devices */
+  }
+  
+  .navLink:hover::before {
+    width: 0;
+    height: 0;
+  }
+  
+  .navLink:active {
+    transform: scale(0.95);
+    background-color: #E2E8F0;
+  }
+  
+  .navLink.active:active {
+    background-color: #2563EB;
+  }
+}
+
+/* Landscape tablet orientation */
+@media (orientation: landscape) and (max-height: 768px) {
+  .navbar {
+    top: 60px; /* Smaller header in landscape */
+    height: calc(100vh - 60px);
+    padding: 16px 0;
+  }
+  
+  .navList {
+    gap: 12px;
+  }
+  
+  .navLink {
+    height: 50px;
+    width: 50px;
+  }
+  
+  .navIcon {
+    /* Icon size is controlled by the size prop in JSX */
+  }
+  
+  .navText {
+    font-size: 9px;
+  }
+}

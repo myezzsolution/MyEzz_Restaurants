@@ -1,0 +1,201 @@
+/* Header component styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: #F4F6F8; /* Ceramic white background */
+  border-bottom: 1px solid #E2E8F0;
+  min-height: 64px;
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.restaurantName {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1E293B; /* Midnight slate color */
+  margin: 0;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 200px);
+}
+
+.toggleContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.statusLabel {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1E293B; /* Midnight slate color */
+  min-width: 60px;
+  text-align: right;
+}
+
+/* Toggle switch styles */
+.toggle {
+  position: relative;
+  width: 60px;
+  height: 32px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  outline: none;
+  min-height: 32px; /* Reduced from 44px to match actual height */
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.toggle:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+.toggle.offline {
+  background-color: #94A3B8; /* Gray for offline */
+}
+
+.toggle.online {
+  background-color: #10B981; /* Green for online */
+}
+
+.toggleSlider {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  width: 28px;
+  height: 28px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-50%);
+}
+
+.toggle.online .toggleSlider {
+  transform: translateY(-50%) translateX(28px);
+}
+
+.toggle.offline .toggleSlider {
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Responsive design for tablets */
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 16px;
+    min-height: 56px;
+  }
+  
+  .restaurantName {
+    font-size: 20px;
+    max-width: calc(100% - 160px);
+  }
+  
+  .statusLabel {
+    font-size: 14px;
+    min-width: 50px;
+  }
+  
+  .toggle {
+    width: 50px;
+    height: 28px;
+    min-width: 50px;
+    min-height: 28px; /* Reduced to match actual height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .toggleSlider {
+    width: 24px;
+    height: 24px;
+    left: 2px;
+    transform: translateY(-50%);
+  }
+  
+  .toggle.online .toggleSlider {
+    transform: translateY(-50%) translateX(22px);
+  }
+}
+
+/* Responsive design for mobile phones */
+@media (max-width: 480px) {
+  .header {
+    padding: 8px 12px;
+    min-height: 52px;
+    gap: 8px;
+  }
+  
+  .restaurantName {
+    font-size: 18px;
+    max-width: calc(100% - 120px);
+  }
+  
+  .toggleContainer {
+    gap: 8px;
+  }
+  
+  .statusLabel {
+    font-size: 12px;
+    min-width: 40px;
+  }
+  
+  .toggle {
+    width: 44px;
+    height: 24px;
+    min-width: 44px;
+    min-height: 24px; /* Reduced to match actual height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .toggleSlider {
+    width: 20px;
+    height: 20px;
+    left: 2px;
+    transform: translateY(-50%);
+  }
+  
+  .toggle.online .toggleSlider {
+    transform: translateY(-50%) translateX(20px);
+  }
+}
+
+/* Responsive design for very small screens */
+@media (max-width: 320px) {
+  .header {
+    padding: 6px 8px;
+    flex-wrap: nowrap;
+  }
+  
+  .restaurantName {
+    font-size: 16px;
+    max-width: calc(100% - 100px);
+  }
+  
+  .statusLabel {
+    display: none; /* Hide status label on very small screens */
+  }
+  
+  .toggleContainer {
+    gap: 4px;
+  }
+}

@@ -1,42 +1,52 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.app {
+  background-color: #F4F6F8; /* Ceramic white background */
+  min-height: 100vh;
+  color: #1E293B; /* Midnight slate color */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Main content area with navbar spacing */
+.main-content {
+  margin-left: 80px; /* Account for navbar width */
+  margin-top: 80px; /* Account for header height */
+  padding: 20px;
+  flex: 1;
+  min-height: calc(100vh - 80px);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Ensure all content is responsive */
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Responsive typography */
+@media (max-width: 768px) {
+  .app {
+    font-size: 14px;
   }
 }
 
-.card {
-  padding: 2em;
+@media (max-width: 480px) {
+  .app {
+    font-size: 13px;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+/* Tablet-specific layout adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .main-content {
+    margin-left: 90px; /* Account for wider navbar on tablets */
+  }
+}
+
+/* Landscape tablet orientation */
+@media (orientation: landscape) and (max-height: 768px) {
+  .main-content {
+    margin-top: 60px; /* Smaller header in landscape */
+    min-height: calc(100vh - 60px);
+  }
 }

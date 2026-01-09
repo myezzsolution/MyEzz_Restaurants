@@ -1,0 +1,244 @@
+/* Responsive utility classes */
+
+/* Container utilities */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 1rem;
+}
+
+/* Responsive padding utilities */
+.p-responsive {
+  padding: 2rem;
+}
+
+.px-responsive {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.py-responsive {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Responsive margin utilities */
+.m-responsive {
+  margin: 2rem;
+}
+
+.mx-responsive {
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.my-responsive {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Text utilities */
+.text-responsive {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Flexbox utilities */
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.align-start {
+  align-items: flex-start;
+}
+
+.align-end {
+  align-items: flex-end;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+  .p-responsive {
+    padding: 1.5rem;
+  }
+  
+  .px-responsive {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .py-responsive {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .m-responsive {
+    margin: 1.5rem;
+  }
+  
+  .mx-responsive {
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+  }
+  
+  .my-responsive {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .text-responsive {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .p-responsive {
+    padding: 1rem;
+  }
+  
+  .px-responsive {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .py-responsive {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .m-responsive {
+    margin: 1rem;
+  }
+  
+  .mx-responsive {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+  
+  .my-responsive {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .text-responsive {
+    font-size: 0.85rem;
+  }
+  
+  /* Stack flex items on mobile */
+  .flex-row-mobile-column {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 320px) {
+  .p-responsive {
+    padding: 0.75rem;
+  }
+  
+  .px-responsive {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .py-responsive {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  .m-responsive {
+    margin: 0.75rem;
+  }
+  
+  .mx-responsive {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+  }
+  
+  .my-responsive {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .text-responsive {
+    font-size: 0.8rem;
+  }
+}
+
+/* Hide/show utilities for different screen sizes */
+.hide-mobile {
+  display: block;
+}
+
+.show-mobile {
+  display: none;
+}
+
+.hide-tablet {
+  display: block;
+}
+
+.show-tablet {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hide-tablet {
+    display: none;
+  }
+  
+  .show-tablet {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .hide-mobile {
+    display: none;
+  }
+  
+  .show-mobile {
+    display: block;
+  }
+}
