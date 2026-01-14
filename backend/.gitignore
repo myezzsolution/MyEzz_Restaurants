@@ -1,0 +1,9 @@
+*.md
+.kiro/specs/restaurant-partner-dashboard/tasks.md
+.kiro/specs/restaurant-partner-dashboard/tasks.md
+*.md
+/.kiro
+node_modules/
+.env
+*.log
+.DS_Store

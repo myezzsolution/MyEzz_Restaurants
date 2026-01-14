@@ -2,20 +2,25 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import OrderCard from '../../components/OrderCard/OrderCard';
 import PrepTimeModal from '../../components/PrepTimeModal/PrepTimeModal';
+import RejectionModal from '../../components/RejectionModal/RejectionModal';
 import RingSpinner from '../../components/Spinner/Spinner';
 import styles from './Dashboard.module.css';
 
 function Dashboard() {
   const [orders, setOrders] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [rejectionModalOpen, setRejectionModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [orderToReject, setOrderToReject] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadOrders = async () => {
       setLoading(true);
+
+      // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       const mockOrders = [
         {
           id: 'ORD001',
@@ -52,7 +57,7 @@ function Dashboard() {
           verificationCode: generateVerificationCode()
         }
       ];
-      
+
       setOrders(mockOrders);
       setLoading(false);
     };
@@ -76,14 +81,30 @@ function Dashboard() {
   };
 
   const handleRejectOrder = (orderId) => {
-    setOrders(orders.filter(order => order.id !== orderId));
+    const order = orders.find(o => o.id === orderId);
+    setOrderToReject(order);
+    setRejectionModalOpen(true);
+  };
+
+  const handleConfirmReject = (reason) => {
+    if (orderToReject) {
+      // In a real app, you would send the rejection reason to the backend here
+      console.log(`Rejecting order ${orderToReject.id} for reason: ${reason}`);
+      setOrders(orders.filter(order => order.id !== orderToReject.id));
+      setOrderToReject(null);
+    }
   };
 
   const handleConfirmPrepTime = (prepTime) => {
     if (selectedOrder) {
-      setOrders(orders.map(order => 
-        order.id === selectedOrder.id 
-          ? { ...order, status: 'preparing', prepTime, acceptedAt: new Date() }
+      setOrders(orders.map(order =>
+        order.id === selectedOrder.id
+          ? {
+            ...order,
+            status: 'preparing',
+            prepTime,
+            acceptedAt: new Date()
+          }
           : order
       ));
     }
@@ -91,8 +112,10 @@ function Dashboard() {
   };
 
   const handleMarkReady = (orderId) => {
-    setOrders(orders.map(order => 
-      order.id === orderId ? { ...order, status: 'ready' } : order
+    setOrders(orders.map(order =>
+      order.id === orderId
+        ? { ...order, status: 'ready' }
+        : order
     ));
   };
 
@@ -258,6 +281,13 @@ function Dashboard() {
         onClose={() => setModalOpen(false)}
         onConfirm={handleConfirmPrepTime}
         orderDetails={selectedOrder}
+      />
+
+      <RejectionModal
+        isOpen={rejectionModalOpen}
+        onClose={() => setRejectionModalOpen(false)}
+        onConfirm={handleConfirmReject}
+        orderDetails={orderToReject}
       />
     </div>
   );
