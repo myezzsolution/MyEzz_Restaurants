@@ -236,7 +236,7 @@ const Profile = () => {
                     onClick={() => fileInputRef.current?.click()}
                     aria-label="Edit profile picture"
                   >
-                    <Camera size={14} />
+                    <Pencil size={14} />
                   </button>
                 )}
                 <input

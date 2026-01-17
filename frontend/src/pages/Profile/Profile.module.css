@@ -216,7 +216,7 @@
   right: -4px;
   width: 28px;
   height: 28px;
-  background: #FF6600;
+  background: #6B7280 !important;
   border: 2px solid #0B1120;
   border-radius: 50%;
   display: flex;
@@ -224,12 +224,14 @@
   justify-content: center;
   cursor: pointer;
   color: #FFFFFF;
-  transition: background 0.2s ease;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
   padding: 0;
 }
 
 .editPfpBtn:hover {
-  background: #FF8533;
+  background: #6B7280 !important;
+  box-shadow: 0 0 12px rgba(107, 114, 128, 0.6);
+  transform: scale(1.05);
 }
 
 .brandInfo {
