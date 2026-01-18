@@ -46,7 +46,7 @@
 /* Main content area with navbar spacing - Fixed for proper footer flow */
 .main-content {
   margin-left: 180px;
-  margin-top: 80px;
+  /* margin-top: 80px; */
   padding: 20px;
   display: flex;
   flex-direction: column;

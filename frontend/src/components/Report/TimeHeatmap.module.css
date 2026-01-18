@@ -1,0 +1,36 @@
+.noData {
+    color: var(--color-slate-silver);
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+}
+
+.tooltip {
+    background: var(--color-midnight-slate);
+    border: var(--border-subtle);
+    padding: 8px 12px;
+    border-radius: 6px;
+    box-shadow: var(--shadow-elevated);
+    font-size: 0.85rem;
+}
+
+.label {
+    color: var(--color-slate-silver);
+    margin: 0 0 4px 0;
+    font-weight: 500;
+}
+
+.value {
+    color: var(--color-pure-white);
+    margin: 0;
+}

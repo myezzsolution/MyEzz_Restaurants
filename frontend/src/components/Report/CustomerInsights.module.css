@@ -1,0 +1,96 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 100%;
+}
+
+.chartSection {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.chartLabel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+.totalUsers {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-pure-white);
+    line-height: 1;
+}
+
+.totalLabel {
+    font-size: 0.7rem;
+    color: var(--color-slate-silver);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.statRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.rowLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-slate-silver);
+    font-weight: 500;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.rowValue {
+    font-weight: 600;
+    color: var(--color-pure-white);
+}
+
+.divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 0.25rem 0;
+}
+
+.avgOrderStat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.avgLabel {
+    font-size: 0.85rem;
+    color: var(--color-slate-silver);
+    font-weight: 500;
+}
+
+.avgValue {
+    font-weight: 700;
+    color: #F59E0B;
+    /* Amber for highlight */
+    font-size: 1rem;
+}
