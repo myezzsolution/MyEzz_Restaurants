@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import OrderCard from '../../components/OrderCard/OrderCard';
 import PrepTimeModal from '../../components/PrepTimeModal/PrepTimeModal';
 import RejectionModal from '../../components/RejectionModal/RejectionModal';
@@ -13,9 +14,7 @@ function Dashboard() {
   const [orderToReject, setOrderToReject] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Generate mock orders on component mount
   useEffect(() => {
-    // Simulate API loading delay
     const loadOrders = async () => {
       setLoading(true);
 
@@ -44,7 +43,7 @@ function Dashboard() {
           total: 185.00,
           status: 'preparing',
           prepTime: 25,
-          acceptedAt: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes ago
+          acceptedAt: new Date(Date.now() - 5 * 60 * 1000),
           verificationCode: generateVerificationCode()
         },
         {
@@ -128,7 +127,13 @@ function Dashboard() {
   const preparingOrders = orders.filter(order => order.status === 'preparing');
   const readyOrders = orders.filter(order => order.status === 'ready');
 
-  // Show loading spinner while fetching orders
+  // Card animation variants
+  const cardVariants = {
+    initial: { opacity: 0, y: 20, scale: 0.95 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } }
+  };
+
   if (loading) {
     return (
       <div className={styles.dashboard}>
@@ -143,19 +148,25 @@ function Dashboard() {
   return (
     <div className={styles.dashboard}>
       <div className={styles.dashboardHeader}>
-        <h1 className={styles.title}>Kitchen Dashboard</h1>
-        <div className={styles.stats}>
+        <h1 className={styles.title}>Orders</h1> {/* Changed from Kitchen Dashboard to Orders */}
+        <div className={styles.statsRibbon}>
           <div className={styles.stat}>
             <span className={styles.statNumber}>{newOrders.length}</span>
-            <span className={styles.statLabel}>New Orders</span>
+            <div className={styles.statDetails}>
+              <span className={styles.statLabel}>New Orders</span>
+            </div>
           </div>
           <div className={styles.stat}>
             <span className={styles.statNumber}>{preparingOrders.length}</span>
-            <span className={styles.statLabel}>Preparing</span>
+            <div className={styles.statDetails}>
+              <span className={styles.statLabel}>Preparing</span>
+            </div>
           </div>
           <div className={styles.stat}>
             <span className={styles.statNumber}>{readyOrders.length}</span>
-            <span className={styles.statLabel}>Ready</span>
+            <div className={styles.statDetails}>
+              <span className={styles.statLabel}>Ready</span>
+            </div>
           </div>
         </div>
       </div>
@@ -169,14 +180,25 @@ function Dashboard() {
             </h2>
           </div>
           <div className={styles.columnContent}>
-            {newOrders.map(order => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                onAccept={handleAcceptOrder}
-                onReject={handleRejectOrder}
-              />
-            ))}
+            <AnimatePresence mode="popLayout">
+              {newOrders.map(order => (
+                <motion.div
+                  key={order.id}
+                  layout
+                  variants={cardVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                >
+                  <OrderCard
+                    order={order}
+                    onAccept={handleAcceptOrder}
+                    onReject={handleRejectOrder}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
             {newOrders.length === 0 && (
               <div className={styles.emptyState}>
                 <p>No new orders</p>
@@ -193,13 +215,24 @@ function Dashboard() {
             </h2>
           </div>
           <div className={styles.columnContent}>
-            {preparingOrders.map(order => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                onMarkReady={handleMarkReady}
-              />
-            ))}
+            <AnimatePresence mode="popLayout">
+              {preparingOrders.map(order => (
+                <motion.div
+                  key={order.id}
+                  layout
+                  variants={cardVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                >
+                  <OrderCard
+                    order={order}
+                    onMarkReady={handleMarkReady}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
             {preparingOrders.length === 0 && (
               <div className={styles.emptyState}>
                 <p>No orders in preparation</p>
@@ -216,13 +249,24 @@ function Dashboard() {
             </h2>
           </div>
           <div className={styles.columnContent}>
-            {readyOrders.map(order => (
-              <OrderCard
-                key={order.id}
-                order={order}
-                onHandToRider={handleHandToRider}
-              />
-            ))}
+            <AnimatePresence mode="popLayout">
+              {readyOrders.map(order => (
+                <motion.div
+                  key={order.id}
+                  layout
+                  variants={cardVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                >
+                  <OrderCard
+                    order={order}
+                    onHandToRider={handleHandToRider}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
             {readyOrders.length === 0 && (
               <div className={styles.emptyState}>
                 <p>No orders ready</p>

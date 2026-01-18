@@ -1,21 +1,59 @@
 .app {
-  background-color: #F4F6F8; /* Ceramic white background */
+  background-color: var(--color-deep-obsidian);
   min-height: 100vh;
-  color: #1E293B; /* Midnight slate color */
+  color: var(--color-pure-white);
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
+  position: relative;
 }
 
-/* Main content area with navbar spacing */
+/* Orange radial glow - positioned at bottom center like footer */
+.app::before {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 70%;
+  background: radial-gradient(ellipse at bottom center, 
+    rgba(255, 102, 0, 0.12) 0%, 
+    rgba(255, 102, 0, 0.06) 35%, 
+    rgba(255, 102, 0, 0.02) 55%,
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Film grain overlay for premium feel - optimized for performance */
+.app::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Main content area with navbar spacing - Fixed for proper footer flow */
 .main-content {
-  margin-left: 80px; /* Account for navbar width */
-  margin-top: 80px; /* Account for header height */
+  margin-left: 180px;
+  margin-top: 80px;
   padding: 20px;
-  flex: 1;
+  display: flex;
+  flex-direction: column;
   min-height: calc(100vh - 80px);
+  position: relative;
+  z-index: 1;
+  /* Removed background-color to let orange glow show through */
 }
 
 /* Ensure all content is responsive */
@@ -39,14 +77,33 @@
 /* Tablet-specific layout adjustments */
 @media (min-width: 768px) and (max-width: 1024px) {
   .main-content {
-    margin-left: 90px; /* Account for wider navbar on tablets */
+    margin-left: 160px;
   }
 }
 
 /* Landscape tablet orientation */
 @media (orientation: landscape) and (max-height: 768px) {
   .main-content {
-    margin-top: 60px; /* Smaller header in landscape */
+    margin-top: 60px;
     min-height: calc(100vh - 60px);
   }
+}
+
+/* Light Mode Styles */
+[data-theme="light"] .app {
+  background-color: #F5F5F5;
+  color: #1A1C20;
+}
+
+[data-theme="light"] .app::before {
+  background: radial-gradient(ellipse at bottom center, 
+    rgba(255, 102, 0, 0.08) 0%, 
+    rgba(255, 102, 0, 0.04) 35%, 
+    rgba(255, 102, 0, 0.01) 55%,
+    transparent 75%
+  );
+}
+
+[data-theme="light"] .main-content {
+  background-color: transparent;
 }

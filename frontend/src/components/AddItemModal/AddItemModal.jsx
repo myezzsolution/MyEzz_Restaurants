@@ -7,7 +7,8 @@ function AddItemModal({ isOpen, onClose, onAdd }) {
   const [formData, setFormData] = useState({
     name: '',
     category: CATEGORIES.MAINS,
-    price: ''
+    price: '',
+    isVeg: true
   });
 
   const handleSubmit = (e) => {
@@ -20,22 +21,24 @@ function AddItemModal({ isOpen, onClose, onAdd }) {
     onAdd({
       name: formData.name.trim(),
       category: formData.category,
-      price: parseFloat(formData.price)
+      price: parseFloat(formData.price),
+      isVeg: formData.isVeg
     });
 
     // Reset form
     setFormData({
       name: '',
       category: CATEGORIES.MAINS,
-      price: ''
+      price: '',
+      isVeg: true
     });
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'radio' ? value === 'true' : value
     }));
   };
 
@@ -89,6 +92,41 @@ function AddItemModal({ isOpen, onClose, onAdd }) {
               <option value={CATEGORIES.BREADS}>Breads</option>
               <option value={CATEGORIES.BEVERAGES}>Beverages</option>
             </select>
+          </div>
+
+          {/* Veg/Non-Veg Selection */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Food Type</label>
+            <div className={styles.vegToggle}>
+              <label className={`${styles.vegOption} ${formData.isVeg ? styles.vegSelected : ''}`}>
+                <input
+                  type="radio"
+                  name="isVeg"
+                  value="true"
+                  checked={formData.isVeg === true}
+                  onChange={handleChange}
+                  className={styles.radioInput}
+                />
+                <span className={styles.vegIndicator}>
+                  <span className={styles.vegDot}></span>
+                </span>
+                <span>Veg</span>
+              </label>
+              <label className={`${styles.vegOption} ${!formData.isVeg ? styles.nonVegSelected : ''}`}>
+                <input
+                  type="radio"
+                  name="isVeg"
+                  value="false"
+                  checked={formData.isVeg === false}
+                  onChange={handleChange}
+                  className={styles.radioInput}
+                />
+                <span className={styles.nonVegIndicator}>
+                  <span className={styles.nonVegDot}></span>
+                </span>
+                <span>Non-Veg</span>
+              </label>
+            </div>
           </div>
 
           <div className={styles.formGroup}>

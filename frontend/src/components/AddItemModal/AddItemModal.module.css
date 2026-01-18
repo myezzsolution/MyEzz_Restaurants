@@ -1,12 +1,12 @@
-/* Add Item Modal Styles */
+/* Add Item Modal - Dark Theme */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,11 +15,12 @@
 }
 
 .modal {
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(180deg, #1A1C20 0%, #0F1012 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
   width: 100%;
-  max-width: 500px;
+  max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -28,41 +29,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 24px 16px 24px;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 24px 24px 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #0f172a;
+  font-size: 22px;
+  font-weight: 800;
+  color: #FFFFFF;
   margin: 0;
-  font-family: 'Inter', sans-serif;
 }
 
 .closeButton {
-  background: none;
-  border: none;
-  color: #64748b;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: none !important;
+  color: #94A3B8;
   cursor: pointer;
-  padding: 4px;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.2s ease;
-  min-height: 32px;
-  min-width: 32px;
+  min-height: 40px;
+  min-width: 40px;
 }
 
 .closeButton:hover {
-  background-color: #f1f5f9;
-  color: #0f172a;
-}
-
-.closeButton:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #FFFFFF;
 }
 
 /* Form Styles */
@@ -78,48 +73,54 @@
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: #94A3B8;
   margin-bottom: 8px;
-  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .input,
 .select {
   width: 100%;
   padding: 14px 16px;
-  border: 2px solid #cbd5e1;
-  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
   font-size: 15px;
-  font-family: 'Inter', sans-serif;
-  color: #0f172a;
-  background-color: white;
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
   transition: all 0.2s ease;
   box-sizing: border-box;
-  min-height: 48px;
+  min-height: 52px;
 }
 
 .input:focus,
 .select:focus {
   outline: none;
-  border-color: #be123c;
-  box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.1);
+  border-color: #10B981;
+  background: rgba(16, 185, 129, 0.05);
 }
 
 .input::placeholder {
-  color: #94a3b8;
+  color: #64748B;
 }
 
 .select {
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 20px;
-  padding-right: 40px;
+  background-position: right 14px center;
+  background-size: 18px;
+  padding-right: 44px;
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* Price Input with Rupee Symbol */
+.select option {
+  background: #1A1C20;
+  color: #FFFFFF;
+}
+
+/* Price Input */
 .priceInputWrapper {
   position: relative;
   width: 100%;
@@ -130,14 +131,83 @@
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: #64748b;
-  font-size: 15px;
-  font-weight: 600;
-  pointer-events: none;
+  color: #10B981;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .priceInput {
-  padding-left: 36px;
+  padding-left: 38px;
+}
+
+/* Veg/Non-Veg Toggle */
+.vegToggle {
+  display: flex;
+  gap: 12px;
+}
+
+.vegOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #94A3B8;
+  font-weight: 500;
+  flex: 1;
+  justify-content: center;
+}
+
+.radioInput {
+  display: none;
+}
+
+.vegIndicator,
+.nonVegIndicator {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vegIndicator {
+  border: 2px solid #10B981;
+}
+
+.nonVegIndicator {
+  border: 2px solid #DC2626;
+}
+
+.vegDot,
+.nonVegDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.vegDot {
+  background: #10B981;
+}
+
+.nonVegDot {
+  background: #DC2626;
+}
+
+.vegSelected {
+  border-color: #10B981;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+}
+
+.nonVegSelected {
+  border-color: #DC2626;
+  background: rgba(220, 38, 38, 0.1);
+  color: #DC2626;
 }
 
 /* Actions */
@@ -145,60 +215,85 @@
   display: flex;
   gap: 12px;
   margin-top: 28px;
-  padding-top: 20px;
-  border-top: 1px solid #e2e8f0;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .cancelButton,
 .submitButton {
   flex: 1;
-  padding: 14px 24px;
-  border-radius: 10px;
+  padding: 16px 24px;
+  border-radius: 12px;
   font-size: 15px;
-  font-weight: 600;
-  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
-  min-height: 48px;
+  transition: all 0.3s ease;
+  min-height: 52px;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Cancel - Ghost Red with Slide Fill */
 .cancelButton {
-  background-color: #f1f5f9;
-  color: #475569;
+  background: transparent !important;
+  border: 1px solid #F87171 !important;
+  color: #F87171 !important;
+  z-index: 1;
+}
+
+.cancelButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%);
+  transition: width 0.3s ease;
+  z-index: -1;
+  border-radius: 11px;
 }
 
 .cancelButton:hover {
-  background-color: #e2e8f0;
+  color: #FFFFFF !important;
+  border-color: #EF4444 !important;
+  background: transparent !important;
 }
 
-.cancelButton:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
+.cancelButton:hover::before {
+  width: 100%;
 }
 
+/* Submit - Green Gradient with Hologram */
 .submitButton {
-  background-color: #be123c;
-  color: white;
-  box-shadow: 0 2px 4px rgba(190, 18, 60, 0.2);
+  background: linear-gradient(180deg, #34D399 0%, #10B981 50%, #059669 100%) !important;
+  border: none !important;
+  color: #FFFFFF !important;
+  z-index: 1;
+}
+
+.submitButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+  z-index: 1;
+}
+
+.submitButton:hover::before {
+  left: 100%;
 }
 
 .submitButton:hover {
-  background-color: #9f1239;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(190, 18, 60, 0.3);
+  background: linear-gradient(180deg, #6EE7B7 0%, #34D399 50%, #10B981 100%) !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
 }
 
-.submitButton:active {
-  transform: translateY(0);
-}
-
-.submitButton:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.2);
-}
-
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 480px) {
   .modal {
     margin: 10px;
@@ -206,11 +301,7 @@
   }
 
   .header {
-    padding: 20px 20px 12px 20px;
-  }
-
-  .title {
-    font-size: 18px;
+    padding: 20px;
   }
 
   .form {
@@ -220,9 +311,71 @@
   .actions {
     flex-direction: column;
   }
+}
 
-  .cancelButton,
-  .submitButton {
-    width: 100%;
-  }
+/* Light Mode Styles */
+[data-theme="light"] .overlay {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] .modal {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5F5F5 100%);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .header {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .title {
+  color: #1A1C20;
+}
+
+[data-theme="light"] .closeButton {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #64748B;
+}
+
+[data-theme="light"] .closeButton:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #1A1C20;
+}
+
+[data-theme="light"] .closeButton svg {
+  color: inherit;
+}
+
+[data-theme="light"] .label {
+  color: #64748B;
+}
+
+[data-theme="light"] .input,
+[data-theme="light"] .select {
+  background: rgba(248, 250, 252, 0.8);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #1A1C20;
+}
+
+[data-theme="light"] .input:focus,
+[data-theme="light"] .select:focus {
+  border-color: #10B981;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+[data-theme="light"] .input::placeholder {
+  color: #94A3B8;
+}
+
+[data-theme="light"] .select {
+  background-color: rgba(248, 250, 252, 0.8);
+}
+
+[data-theme="light"] .select option {
+  background: #FFFFFF;
+  color: #1A1C20;
+}
+
+[data-theme="light"] .actions {
+  border-top-color: rgba(0, 0, 0, 0.08);
 }

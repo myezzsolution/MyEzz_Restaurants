@@ -1,23 +1,108 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* ===== Refined Obsidian & Flame Design Tokens ===== */
+  
+  /* Main Colors - Refined */
+  --color-deep-obsidian: #0B0C10;          /* Deep tinted charcoal - Main Background */
+  --color-midnight-slate: #1A1C20;         /* Refined card background */
+  --color-sunset-orange: #FF6600;          /* Sunset Orange - Primary Accent */
+  --color-orange-deep: #E65C00;            /* Deeper orange for gradients */
+  --color-crimson-red: #990000;            /* Crimson Red - Critical Actions */
+  --color-pure-white: #FFFFFF;             /* Pure White - Primary Text */
+  --color-slate-silver: #94A3B8;           /* Slate Silver - Secondary Text */
+  --color-pure-black: #000000;             /* Pure Black - Navigation */
+  --color-emerald-green: #10B981;          /* Emerald Green - Success States */
+  --color-emerald-glow: #059669;           /* Deeper green for hover */
+  
+  /* Enhanced Gradients */
+  --gradient-flame: linear-gradient(135deg, var(--color-sunset-orange) 0%, var(--color-orange-deep) 100%);
+  --gradient-flame-hover: linear-gradient(135deg, #FF7A1A 0%, #CC5200 100%);
+  
+  /* Borders & Overlays */
+  --border-subtle: 1px solid rgba(255, 255, 255, 0.08);
+  --border-accent: 1px solid rgba(255, 102, 0, 0.2);
+  --overlay-glass: rgba(26, 28, 32, 0.8);
+  --overlay-modal: rgba(11, 12, 16, 0.85);
+  
+  /* Enhanced Shadows & Effects */
+  --shadow-glow-orange: 0 0 24px rgba(255, 102, 0, 0.4), 0 0 48px rgba(255, 102, 0, 0.1);
+  --shadow-glow-green: 0 0 20px rgba(16, 185, 129, 0.4);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --blur-glass: blur(12px);
+  
+  /* Typography - Inter Font System */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: 500; /* Default body weight */
 
-  color-scheme: light;
-  color: #1E293B;
-  background-color: #F4F6F8;
+  /* Updated Color Scheme */
+  color-scheme: dark;
+  color: var(--color-pure-white);
+  background-color: var(--color-deep-obsidian);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+[data-theme="light"] {
+  --color-deep-obsidian: #F5F5F5;          /* Off-white Background */
+  --color-midnight-slate: #FFFFFF;         /* White card background */
+  --color-pure-white: #1A1C20;             /* Dark Text for Light Mode */
+  --color-slate-silver: #64748B;           /* Slate Text */
+  --color-pure-black: #FFFFFF;             /* Navigation Background */
+  
+  --border-subtle: 1px solid rgba(0, 0, 0, 0.08);
+  --border-accent: 1px solid rgba(255, 102, 0, 0.2);
+  --overlay-glass: rgba(255, 255, 255, 0.9);
+  --overlay-modal: rgba(245, 245, 245, 0.95);
+  
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.12);
+  
+  color-scheme: light;
+}
+
+/* Smooth theme transitions */
+:root,
+:root *,
+:root *::before,
+:root *::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Global responsive reset */
 *, *::before, *::after {
   box-sizing: border-box;
+}
+
+/* Thin Scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
 }
 
 html {
@@ -31,11 +116,24 @@ body {
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
+  background-color: var(--color-deep-obsidian);
+  color: var(--color-pure-white);
+  font-weight: 500;
+}
+
+[data-theme="light"] body {
+  background-color: #F5F5F5;
+  color: #1A1C20;
 }
 
 #root {
   width: 100%;
   min-height: 100vh;
+  background-color: var(--color-deep-obsidian);
+}
+
+[data-theme="light"] #root {
+  background-color: #F5F5F5;
 }
 
 /* Responsive typography */
@@ -59,36 +157,48 @@ body {
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--color-sunset-orange);
   text-decoration: inherit;
+  transition: color 0.2s ease;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--color-pure-white);
 }
 
 h1 {
   font-size: 2rem;
   line-height: 1.2;
   margin: 0 0 1rem 0;
+  color: var(--color-pure-white);
+  font-weight: 800; /* Bold headings */
+  letter-spacing: -0.02em;
 }
 
 h2 {
   font-size: 1.5rem;
   line-height: 1.3;
   margin: 0 0 0.75rem 0;
+  color: var(--color-pure-white);
+  font-weight: 800; /* Bold headings */
+  letter-spacing: -0.01em;
 }
 
 h3 {
   font-size: 1.25rem;
   line-height: 1.4;
   margin: 0 0 0.5rem 0;
+  color: var(--color-pure-white);
+  font-weight: 800; /* Bold headings */
 }
 
 p {
   margin: 0 0 1rem 0;
   line-height: 1.6;
+  color: var(--color-slate-silver);
+  font-weight: 500; /* Body text weight */
 }
 
+/* ===== Enhanced Button Styles ===== */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -96,22 +206,81 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #f9f9f9;
-  color: #1E293B;
   cursor: pointer;
-  transition: border-color 0.25s, background-color 0.25s;
-  min-height: 44px; /* Touch target requirement */
+  transition: all 0.3s ease;
+  min-height: 44px;
   min-width: 44px;
+  position: relative;
+  overflow: hidden;
 }
 
-button:hover {
-  border-color: #646cff;
-  background-color: #e2e8f0;
+/* Primary Flame Button */
+.btn-primary {
+  background: var(--gradient-flame);
+  color: var(--color-pure-white);
+  border: none;
+  box-shadow: var(--shadow-card);
+}
+
+.btn-primary:hover {
+  background: var(--gradient-flame-hover);
+  box-shadow: var(--shadow-glow-orange);
+  transform: translateY(-2px);
+}
+
+/* Secondary Outline Button */
+.btn-secondary {
+  background: transparent;
+  color: var(--color-sunset-orange);
+  border: var(--border-accent);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 102, 0, 0.1);
+  border-color: var(--color-sunset-orange);
+  color: var(--color-pure-white);
+}
+
+/* Success Button */
+.btn-success {
+  background: var(--color-emerald-green);
+  color: var(--color-pure-white);
+  border: none;
+}
+
+.btn-success:hover {
+  background: #059669;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+/* Danger Button */
+.btn-danger {
+  background: var(--color-crimson-red);
+  color: var(--color-pure-white);
+  border: none;
+}
+
+.btn-danger:hover {
+  background: #7F1D1D;
+  box-shadow: 0 0 20px rgba(153, 0, 0, 0.3);
+}
+
+/* Default Button Fallback */
+button:not([class*="btn-"]) {
+  background-color: var(--color-midnight-slate);
+  color: #FFFFFF;
+  border: var(--border-subtle);
+}
+
+button:not([class*="btn-"]):hover {
+  background-color: rgba(255, 102, 0, 0.1);
+  border-color: var(--color-sunset-orange);
+  color: #FFFFFF;
 }
 
 button:focus,
 button:focus-visible {
-  outline: 2px solid #646cff;
+  outline: 2px solid var(--color-sunset-orange);
   outline-offset: 2px;
 }
 

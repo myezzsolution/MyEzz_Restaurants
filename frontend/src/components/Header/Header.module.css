@@ -1,29 +1,33 @@
-/* Header component styles */
+/* Header component styles - Obsidian & Flame Design System */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background-color: #F4F6F8; /* Ceramic white background */
-  border-bottom: 1px solid #E2E8F0;
+  background: rgba(11, 12, 16, 0.8);
+  backdrop-filter: var(--blur-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  border-bottom: var(--border-subtle);
   min-height: 64px;
   width: 100%;
   box-sizing: border-box;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: var(--shadow-card);
 }
 
 .restaurantName {
   font-size: 24px;
   font-weight: 600;
-  color: #1E293B; /* Midnight slate color */
+  color: var(--color-sunset-orange); /* Orange color for header text */
   margin: 0;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: calc(100% - 200px);
+  text-shadow: 0 2px 4px rgba(255, 102, 0, 0.3);
 }
 
 .toggleContainer {
@@ -36,9 +40,10 @@
 .statusLabel {
   font-size: 16px;
   font-weight: 500;
-  color: #1E293B; /* Midnight slate color */
+  color: var(--color-slate-silver);
   min-width: 60px;
   text-align: right;
+  transition: color 0.3s ease;
 }
 
 /* Toggle switch styles */
@@ -49,17 +54,18 @@
   border: none;
   border-radius: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   outline: none;
-  min-height: 32px; /* Reduced from 44px to match actual height */
+  min-height: 32px;
   min-width: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .toggle:focus {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.3);
 }
 
 .toggle:active {
@@ -68,11 +74,30 @@
 }
 
 .toggle.offline {
-  background-color: #94A3B8; /* Gray for offline */
+  background-color: var(--color-slate-silver);
+}
+
+.toggle.offline:hover {
+  background-color: var(--color-slate-silver); /* Keep same color on hover */
+  opacity: 0.8; /* Subtle hover effect */
+}
+
+.toggle.offline .statusLabel {
+  color: var(--color-slate-silver);
 }
 
 .toggle.online {
-  background-color: #10B981; /* Green for online */
+  background: var(--color-emerald-green);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+}
+
+.toggle.online:hover {
+  background: var(--color-emerald-green); /* Keep same color on hover */
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); /* Enhanced glow on hover */
+}
+
+.toggle.online + .statusLabel {
+  color: var(--color-emerald-green);
 }
 
 .toggleSlider {
@@ -81,10 +106,10 @@
   left: 2px;
   width: 28px;
   height: 28px;
-  background-color: white;
+  background: var(--color-pure-white);
   border-radius: 50%;
   transition: transform 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transform: translateY(-50%);
 }
 
@@ -198,4 +223,29 @@
   .toggleContainer {
     gap: 4px;
   }
+}
+
+/* Light Mode Styles */
+[data-theme="light"] .header {
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .restaurantName {
+  color: var(--color-sunset-orange);
+  text-shadow: none;
+}
+
+[data-theme="light"] .statusLabel {
+  color: #64748B;
+}
+
+[data-theme="light"] .toggle.offline {
+  background-color: #CBD5E1;
+}
+
+[data-theme="light"] .toggleSlider {
+  background: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }

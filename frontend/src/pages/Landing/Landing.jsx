@@ -4,13 +4,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChefHat,
   Bike,
-  ArrowRight,
   ChevronRight,
   Zap,
   TrendingUp,
   Shield,
   Clock,
   Menu as MenuIcon,
+  Instagram,
+  ExternalLink,
+  Phone,
+  Mail,
 } from 'lucide-react';
 import styles from './Landing.module.css';
 
@@ -98,9 +101,9 @@ function Landing() {
       <nav className={styles.glassNavbar}>
         <div className={styles.navContent}>
           <div className={styles.logo} onClick={() => navigate('/landing')}>
-            <img 
-              src="/myezzlogopage0001removebgpreview1338-07fh-400h.png" 
-              alt="MyEzz Partner" 
+            <img
+              src="/myezzlogopage0001removebgpreview1338-07fh-400h.png"
+              alt="MyEzz Partner"
               className={styles.logoImage}
             />
           </div>
@@ -142,8 +145,8 @@ function Landing() {
             </span>
           </h1>
           <p className={styles.heroSubtitle}>
-            Stop juggling apps and start scaling. Join an exclusive circle of local 
-            partners using MyEzz to streamline every order, from prep to dispatch, 
+            Stop juggling apps and start scaling. Join an exclusive circle of local
+            partners using MyEzz to streamline every order, from prep to dispatch,
             with real-time insights designed for the modern Indian kitchen.
           </p>
           <motion.button
@@ -204,9 +207,114 @@ function Landing() {
 
       {/* Footer */}
       <footer className={styles.footer}>
-        <p className={styles.footerText}>
-          © 2026 <span className={styles.footerBrand}>MyEzz Partner</span>. All rights reserved.
-        </p>
+        <div className={styles.footerContent}>
+          {/* Footer Top Section */}
+          <div className={styles.footerTop}>
+            <div className={styles.footerBrand}>
+              <img
+                src="/myezzlogopage0001removebgpreview1338-07fh-400h.png"
+                alt="MyEzz Partner"
+                className={styles.footerLogo}
+              />
+              <p className={styles.footerDescription}>
+                Empowering local kitchens with smart technology.
+                Scale your business effortlessly with MyEzz Partner.
+              </p>
+            </div>
+
+            <div className={styles.footerLinks}>
+              <div className={styles.footerColumn}>
+                <h4 className={styles.footerColumnTitle}>Features</h4>
+                <ul className={styles.footerLinkList}>
+                  <li><a href="#features" className={styles.footerLink}>Lightning Fast Orders</a></li>
+                  <li><a href="#features" className={styles.footerLink}>Smart Analytics</a></li>
+                  <li><a href="#features" className={styles.footerLink}>Menu Management</a></li>
+                  <li><a href="#features" className={styles.footerLink}>Real-time Updates</a></li>
+                </ul>
+              </div>
+
+              <div className={styles.footerColumn}>
+                <h4 className={styles.footerColumnTitle}>Company</h4>
+                <ul className={styles.footerLinkList}>
+                  <li>
+                    <a
+                      href="https://my-ezz.vercel.app/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.footerLink}
+                    >
+                      MyEzz Official <ExternalLink size={14} />
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://myezzofficial.netlify.app/about"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.footerLink}
+                    >
+                      About Us <ExternalLink size={14} />
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://myezzofficial.netlify.app/contact"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.footerLink}
+                    >
+                      Contact <ExternalLink size={14} />
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div className={styles.footerColumn}>
+                <h4 className={styles.footerColumnTitle}>Connect</h4>
+                <div className={styles.socialContactGrid}>
+                  <a
+                    href="https://www.instagram.com/mycravezz/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialContactLink}
+                    aria-label="Follow us on Instagram"
+                  >
+                    <Instagram size={20} />
+                  </a>
+                  <a
+                    href="tel:+918097021356"
+                    className={styles.socialContactLink}
+                    aria-label="Call us"
+                  >
+                    <Phone size={20} />
+                  </a>
+                  <a
+                    href="mailto:myeasycheckout@gmail.com"
+                    className={styles.socialContactLink}
+                    aria-label="Email us"
+                  >
+                    <Mail size={20} />
+                  </a>
+                </div>
+                <div className={styles.contactDetails}>
+                  <p className={styles.contactText}>+91 80970 21356</p>
+                  <p className={styles.contactText}>myeasycheckout@gmail.com</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Bottom Section */}
+          <div className={styles.footerBottom}>
+            <p className={styles.footerCopyright}>
+              © 2026 <span className={styles.footerBrandName}>MyEzz Partner</span>. All rights reserved.
+            </p>
+            <div className={styles.footerBottomLinks}>
+              <a href="#" className={styles.footerBottomLink}>Privacy Policy</a>
+              <a href="#" className={styles.footerBottomLink}>Terms of Service</a>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );

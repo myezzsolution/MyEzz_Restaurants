@@ -3,12 +3,13 @@
  * Simple flat structure without nested variants
  */
 
-export const createMenuItem = (id, name, category, price, inStock = true) => ({
+export const createMenuItem = (id, name, category, price, inStock = true, isVeg = true) => ({
   id,
   name,
   category,
   price,
-  inStock
+  inStock,
+  isVeg
 });
 
 // Category constants

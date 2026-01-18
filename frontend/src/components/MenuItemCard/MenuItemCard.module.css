@@ -1,27 +1,27 @@
-/* Menu Item Card Styles */
+/* Menu Item Card Styles - Refined Obsidian & Flame Design System */
 .card {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 12px 20px;
-  margin-bottom: 12px;
+  background: rgba(26, 28, 32, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  padding: 20px 24px;
+  margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 2px solid transparent;
-  min-height: 56px;
+  transition: all 0.3s ease;
+  min-height: 72px;
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   transform: translateY(-2px);
-  border-color: #e2e8f0;
+  border-color: rgba(255, 102, 0, 0.2);
 }
 
 .card.outOfStock {
-  opacity: 0.6;
-  background-color: #fafafa;
+  opacity: 0.7;
+  background: rgba(26, 28, 32, 0.5);
 }
 
 /* Item Info Section */
@@ -30,36 +30,100 @@
   min-width: 0;
 }
 
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Veg/Non-Veg Badge */
+.vegBadge {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.veg {
+  border: 2px solid #10B981;
+}
+
+.nonVeg {
+  border: 2px solid #DC2626;
+}
+
+.vegDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.veg .vegDot {
+  background: #10B981;
+}
+
+.nonVeg .vegDot {
+  background: #DC2626;
+}
+
 .itemName {
   font-family: 'Inter', sans-serif;
   font-weight: 700;
-  font-size: 16px;
-  color: #1e293b;
-  margin: 0 0 6px 0;
-  line-height: 1.4;
+  font-size: 18px;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+/* Delete Button */
+.deleteBtn {
+  background: transparent;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #DC2626;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deleteBtn:hover {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: #DC2626;
 }
 
 .itemDetails {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 12px;
+  font-size: 15px;
 }
 
+/* Enhanced Price Visibility */
 .price {
-  font-weight: 700;
-  color: #1e293b;
-  font-size: 16px;
+  font-weight: 800;
+  color: #FF8533;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 2px rgba(255, 133, 51, 0.3);
 }
 
 .separator {
-  color: #cbd5e1;
-  font-weight: 400;
+  color: var(--color-slate-silver);
+  font-weight: 500;
 }
 
 .category {
-  color: #64748b;
+  color: #FFFFFF;
   font-weight: 500;
+  text-transform: capitalize;
 }
 
 /* Toggle Section */
@@ -67,24 +131,23 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   flex-shrink: 0;
   align-self: center;
 }
 
-/* Toggle Switch - Compact Professional Size */
-/* Override global button min-height/min-width */
+/* Custom Styled Toggle Switch */
 .toggle {
   position: relative;
-  width: 44px !important;
-  height: 24px !important;
-  min-height: 24px !important;
-  max-height: 24px !important;
-  min-width: 44px !important;
+  width: 52px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  min-width: 52px !important;
   border: none !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
   outline: none !important;
   display: inline-flex;
   align-items: center;
@@ -92,15 +155,17 @@
   padding: 3px !important;
   flex-shrink: 0;
   box-sizing: border-box;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .toggle:focus {
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
   outline: none !important;
 }
 
 .toggle:hover {
   border-color: transparent !important;
+  transform: scale(1.05);
 }
 
 .toggle:active:not(:disabled) {
@@ -112,51 +177,57 @@
   opacity: 0.7;
 }
 
+/* Toggle States */
 .toggleOn {
-  background-color: #10b981 !important;
+  background: var(--color-emerald-green) !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .toggleOff {
-  background-color: #94a3b8 !important;
+  background: var(--color-slate-silver) !important;
 }
 
 .toggleSlider {
-  width: 18px;
-  height: 18px;
-  background-color: white;
+  width: 22px;
+  height: 22px;
+  background: #FFFFFF;
   border-radius: 50%;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   transform: translateX(0);
   flex-shrink: 0;
 }
 
 .toggleOn .toggleSlider {
-  transform: translateX(20px);
+  transform: translateX(24px);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
 }
 
 .toggle:hover .toggleSlider {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* Status Label */
 .statusLabel {
-  font-size: 12px;
-  font-weight: 600;
-  transition: color 0.15s ease;
+  font-size: 13px;
+  font-weight: 700;
+  transition: color 0.3s ease;
   white-space: nowrap;
   order: -1;
   line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .statusLabel.inStock {
-  color: #10b981;
+  color: var(--color-emerald-green);
+  text-shadow: 0 1px 2px rgba(16, 185, 129, 0.3);
 }
 
 .statusLabel.outStock {
-  color: #dc2626;
+  color: var(--color-crimson-red);
   opacity: 1 !important;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 /* Responsive Design */
@@ -197,4 +268,44 @@
   .toggleSection {
     gap: 8px;
   }
+}
+
+/* Light Mode Styles */
+[data-theme="light"] .card {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 102, 0, 0.25);
+}
+
+[data-theme="light"] .card.outOfStock {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="light"] .itemName {
+  color: #1A1C20;
+}
+
+[data-theme="light"] .category {
+  color: #1A1C20;
+}
+
+[data-theme="light"] .toggleOff {
+  background: #CBD5E1 !important;
+}
+
+/* Light mode - Delete button visibility */
+[data-theme="light"] .deleteBtn {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.4);
+  color: #DC2626;
+}
+
+[data-theme="light"] .deleteBtn:hover {
+  background: rgba(220, 38, 38, 0.15);
+  border-color: #DC2626;
 }

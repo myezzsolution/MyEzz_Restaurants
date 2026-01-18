@@ -13,15 +13,24 @@ export const useRestaurant = () => {
 export const RestaurantProvider = ({ children }) => {
   const [restaurantName] = useState('Demo Restaurant'); // Default name for MVP
   const [isOnline, setIsOnline] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const setOnlineStatus = (status) => {
     setIsOnline(status);
   };
 
+  const toggleProfile = (isOpen) => {
+    setIsProfileOpen(isOpen);
+  };
+
   const value = {
     restaurantName,
     isOnline,
-    setOnlineStatus
+    restaurantName,
+    isOnline,
+    setOnlineStatus,
+    isProfileOpen,
+    toggleProfile
   };
 
   return (

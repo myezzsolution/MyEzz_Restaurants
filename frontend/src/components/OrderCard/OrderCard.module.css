@@ -1,263 +1,429 @@
 /* Order Card Styles */
 .orderCard {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 16px;
-  margin-bottom: 12px;
-  transition: all 0.2s ease;
+  background: rgba(26, 28, 32, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  transition: all 0.3s ease;
 }
 
 .orderCard:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
-}
-
-/* Status-based styling - removed border colors */
-.newOrder {
-  /* No border styling */
-}
-
-.preparing {
-  /* No border styling */
-}
-
-.ready {
-  /* No border styling */
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* Card Header */
 .cardHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
 }
 
 .orderId {
-  font-family: 'Inter', sans-serif;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
   font-weight: 800;
-  font-size: 18px;
+  font-size: 1.75rem;
   margin: 0;
-  color: #1e293b;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(180deg, #FBBF24 0%, #D97706 100%);
+  color: #FFFFFF;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.timerDelayed {
+  background: linear-gradient(180deg, #EF4444 0%, #B91C1C 100%) !important;
 }
 
 .statusBadge {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 0.375rem 0.75rem;
+  border-radius: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-top: 0.5rem;
 }
 
 .newOrder .statusBadge {
-  background-color: #fef2f2;
-  color: #be123c; /* text-rose-700 */
+  background: rgba(255, 102, 0, 0.15);
+  color: #FF6600;
 }
 
 .preparing .statusBadge {
-  background-color: #fffbeb;
-  color: #b45309; /* text-amber-700 */
+  background: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
 }
 
 .ready .statusBadge {
-  background-color: #ecfdf5;
-  color: #047857; /* text-emerald-700 */
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
 }
 
 /* Customer Info */
 .customerInfo {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  color: #64748b;
-  font-size: 14px;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  color: #94A3B8;
+  font-size: 0.875rem;
+}
+
+.customerName {
+  color: rgba(148, 163, 184, 0.6);
 }
 
 /* Order Items */
 .orderItems {
-  margin-bottom: 12px;
+  margin-bottom: 1.25rem;
 }
 
 .orderItem {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-  font-size: 14px;
-}
-
-.quantity {
-  font-weight: 600;
-  color: #475569;
-  min-width: 24px;
-}
-
-.itemName {
-  color: #334155;
-}
-
-/* Order Total */
-.orderTotal {
-  font-size: 16px;
-  color: #1e293b;
-  margin-bottom: 12px;
-  padding-top: 8px;
-  border-top: 1px solid #e2e8f0;
-}
-
-/* Timer */
-.timer {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background-color: #fffbeb;
-  color: #b45309;
-  padding: 8px 12px;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  padding: 0.5rem;
   border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-/* Verification Code */
-.verificationCode {
-  background-color: #ecfdf5;
-  padding: 12px;
-  border-radius: 8px;
-  text-align: center;
-  margin-bottom: 12px;
-}
-
-.codeLabel {
-  font-size: 12px;
-  color: #047857;
-  font-weight: 500;
-  margin-bottom: 4px;
-}
-
-.code {
-  font-size: 24px;
-  font-weight: 800;
-  color: #047857;
-  font-family: 'Inter', monospace;
-  letter-spacing: 2px;
-}
-
-/* Card Actions */
-.cardActions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-/* Button Styles */
-.acceptBtn {
-  flex: 1;
-  background-color: #10b981;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.acceptBtn:hover {
-  background-color: #059669;
-  transform: translateY(-1px);
+.itemChecked {
+  background: rgba(255, 255, 255, 0.03);
+  opacity: 0.5;
 }
 
-.acceptBtn:active {
-  transform: translateY(0);
-}
-
-.rejectBtn {
-  flex: 1;
-  background-color: transparent;
-  color: #dc2626;
-  border: 2px solid #dc2626;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.rejectBtn:hover {
-  background-color: #dc2626;
-  color: white;
-  transform: translateY(-1px);
-}
-
-.rejectBtn:active {
-  transform: translateY(0);
-}
-
-.markReadyBtn {
-  width: 100%;
-  background-color: #f59e0b;
-  color: white;
-  border: none;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
+.itemCheckbox {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  border: 2px solid #64748B !important;
+  border-radius: 4px !important;
+  background: transparent !important;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  padding: 0 !important;
 }
 
-.markReadyBtn:hover {
-  background-color: #d97706;
-  transform: translateY(-1px);
+.itemCheckbox:hover {
+  border-color: #10B981 !important;
+  background: rgba(16, 185, 129, 0.1) !important;
 }
 
-.markReadyBtn:active {
-  transform: translateY(0);
+.itemCheckbox.checked {
+  background: #10B981 !important;
+  border-color: #10B981 !important;
+  color: #FFFFFF;
 }
 
-.handToRiderBtn {
-  width: 100%;
-  background-color: #047857;
-  color: white;
-  border: none;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
+.quantity {
+  font-weight: 800;
+  color: #FF6600;
+  min-width: 1.5rem;
+}
+
+.itemName {
+  color: #FFFFFF;
+  font-weight: 500;
   transition: all 0.2s ease;
 }
 
+.strikethrough {
+  text-decoration: line-through;
+  opacity: 0.4;
+  color: #64748B;
+}
+
+/* Order Total */
+.orderTotal {
+  font-size: 1.125rem;
+  color: #FFFFFF;
+  margin-bottom: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-weight: 600;
+}
+
+.orderTotal strong {
+  color: #10B981;
+  font-weight: 700;
+}
+
+/* Verification Code */
+.verificationCode {
+  background: #042F2E;
+  padding: 1.25rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  border: 1px dashed rgba(16, 185, 129, 0.4);
+}
+
+.codeLabel {
+  font-size: 0.65rem;
+  color: #34D399;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.code {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #34D399;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.4rem;
+  text-shadow: 0 0 20px rgba(52, 211, 153, 0.5);
+}
+
+/* Action Buttons */
+.cardActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+/* Accept Button - Original Green Gradient with Hologram */
+.acceptBtn {
+  flex: 2;
+  background: linear-gradient(180deg, #34D399 0%, #10B981 50%, #059669 100%) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  padding: 0.875rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.acceptBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.acceptBtn:hover::before {
+  left: 100%;
+}
+
+.acceptBtn:hover {
+  background: linear-gradient(180deg, #6EE7B7 0%, #34D399 50%, #10B981 100%) !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+}
+
+/* Reject Button - Ghost Red with Slide Fill */
+.rejectBtn {
+  flex: 1;
+  background: transparent !important;
+  color: #F87171 !important;
+  border: 1px solid #F87171 !important;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.rejectBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%);
+  transition: width 0.3s ease;
+  z-index: -1;
+  border-radius: 11px;
+}
+
+.rejectBtn:hover {
+  color: #FFFFFF !important;
+  border-color: #EF4444 !important;
+  background: transparent !important;
+}
+
+.rejectBtn:hover::before {
+  width: 100%;
+}
+
+/* Mark Ready Button - Orange Gradient with Hologram */
+.markReadyBtn {
+  width: 100%;
+  background: linear-gradient(180deg, #FB923C 0%, #F97316 50%, #EA580C 100%) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.markReadyBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.markReadyBtn:hover::before {
+  left: 100%;
+}
+
+.markReadyBtn:hover {
+  background: linear-gradient(180deg, #FDBA74 0%, #FB923C 50%, #F97316 100%) !important;
+  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.3);
+}
+
+/* Hand to Rider Button - Green Gradient with Hologram */
+.handToRiderBtn {
+  width: 100%;
+  background: linear-gradient(180deg, #6EE7B7 0%, #34D399 50%, #10B981 100%) !important;
+  color: #065F46 !important;
+  border: none !important;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.handToRiderBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transition: left 0.5s ease;
+}
+
+.handToRiderBtn:hover::before {
+  left: 100%;
+}
+
 .handToRiderBtn:hover {
-  background-color: #065f46;
-  transform: translateY(-1px);
+  background: linear-gradient(180deg, #A7F3D0 0%, #6EE7B7 50%, #34D399 100%) !important;
+  box-shadow: 0 4px 16px rgba(52, 211, 153, 0.3);
 }
 
-.handToRiderBtn:active {
-  transform: translateY(0);
-}
-
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
   .orderCard {
-    padding: 12px;
+    padding: 1.25rem;
+  }
+  
+  .orderId {
+    font-size: 1.5rem;
   }
   
   .cardActions {
     flex-direction: column;
+    gap: 0.5rem;
   }
-  
-  .acceptBtn, .rejectBtn {
-    flex: none;
-  }
+}
+
+/* Light Mode Styles */
+[data-theme="light"] .orderCard {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .orderCard:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .orderId {
+  color: #1A1C20;
+}
+
+[data-theme="light"] .customerInfo {
+  color: #64748B;
+}
+
+[data-theme="light"] .customerInfo svg {
+  color: #94A3B8;
+}
+
+[data-theme="light"] .customerName {
+  color: rgba(100, 116, 139, 0.7);
+}
+
+[data-theme="light"] .itemName {
+  color: #1A1C20;
+}
+
+[data-theme="light"] .strikethrough {
+  color: #94A3B8;
+}
+
+[data-theme="light"] .orderTotal {
+  color: #1A1C20;
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .verificationCode {
+  background: #ECFDF5;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="light"] .orderItem {
+  border-radius: 8px;
+}
+
+[data-theme="light"] .itemChecked {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .timer svg {
+  color: #FFFFFF;
 }

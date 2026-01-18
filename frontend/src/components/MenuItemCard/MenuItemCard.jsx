@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { Trash2 } from 'lucide-react';
 import styles from './MenuItemCard.module.css';
 
-const MenuItemCard = ({ item, onToggleStock }) => {
+const MenuItemCard = ({ item, onToggleStock, onDelete }) => {
   const [isToggling, setIsToggling] = useState(false);
 
   const handleToggle = async () => {
@@ -12,10 +13,22 @@ const MenuItemCard = ({ item, onToggleStock }) => {
     setIsToggling(false);
   };
 
+  const handleDelete = () => {
+    if (window.confirm(`Are you sure you want to delete "${item.name}"?`)) {
+      onDelete(item.id);
+    }
+  };
+
   return (
     <div className={`${styles.card} ${!item.inStock ? styles.outOfStock : ''}`}>
       <div className={styles.itemInfo}>
-        <h3 className={styles.itemName}>{item.name}</h3>
+        <div className={styles.nameRow}>
+          {/* Veg/Non-Veg Badge */}
+          <span className={`${styles.vegBadge} ${item.isVeg ? styles.veg : styles.nonVeg}`}>
+            <span className={styles.vegDot}></span>
+          </span>
+          <h3 className={styles.itemName}>{item.name}</h3>
+        </div>
         <div className={styles.itemDetails}>
           <span className={styles.price}>₹{item.price}</span>
           <span className={styles.separator}>•</span>
@@ -24,6 +37,13 @@ const MenuItemCard = ({ item, onToggleStock }) => {
       </div>
       
       <div className={styles.toggleSection}>
+        <button
+          className={styles.deleteBtn}
+          onClick={handleDelete}
+          aria-label={`Delete ${item.name}`}
+        >
+          <Trash2 size={18} />
+        </button>
         <button
           className={`${styles.toggle} ${item.inStock ? styles.toggleOn : styles.toggleOff} ${isToggling ? styles.toggling : ''}`}
           onClick={handleToggle}
