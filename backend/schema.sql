@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS orders (
             'preparing',
             'ready',
             'completed',
+            'delivered',
+            'rejected',
             'cancelled'
         )
     ),
@@ -48,9 +50,9 @@ CREATE TRIGGER update_orders_updated_at
 -- Insert sample data for testing
 INSERT INTO orders (order_id, customer_name, items, total, status, verification_code, created_at)
 VALUES 
-  ('ORD001', 'Yug Patel', '[{"name": "Margherita Pizza", "quantity": 1}, {"name": "Caesar Salad", "quantity": 1}]'::jsonb, 249.99, 'new', 'A1B2', NOW()),
-  ('ORD002', 'Aksh Maheshwari', '[{"name": "Chicken Burger", "quantity": 2}, {"name": "French Fries", "quantity": 1}]'::jsonb, 185.00, 'preparing', 'C3D4', NOW()),
-  ('ORD003', 'Nayan Chellani', '[{"name": "French Fries", "quantity": 1}]'::jsonb, 157.50, 'ready', 'E5F6', NOW())
+  ('ORD001', 'Yug Patel', '[{"name": "Margherita Pizza", "quantity": 1, "price": 149.99}, {"name": "Caesar Salad", "quantity": 1, "price": 100.00}]'::jsonb, 249.99, 'new', 'A1B2', NOW()),
+  ('ORD002', 'Aksh Maheshwari', '[{"name": "Chicken Burger", "quantity": 2, "price": 80.00}, {"name": "French Fries", "quantity": 1, "price": 25.00}]'::jsonb, 185.00, 'preparing', 'C3D4', NOW()),
+  ('ORD003', 'Nayan Chellani', '[{"name": "French Fries", "quantity": 1, "price": 25.00}, {"name": "Pasta Carbonara", "quantity": 1, "price": 132.50}]'::jsonb, 157.50, 'ready', 'E5F6', NOW())
 ON CONFLICT (order_id) DO NOTHING;
 
 -- Verify the table was created successfully

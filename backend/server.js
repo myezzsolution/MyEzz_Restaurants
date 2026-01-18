@@ -22,8 +22,8 @@ if (hasSupabaseCredentials) {
         const { createClient } = await import('@supabase/supabase-js');
         supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-        // Test connection
-        const { error } = await supabase.from('orders').select('count', { count: 'exact', head: true });
+        // Test connection with a real query to ensure table exists
+        const { error } = await supabase.from('orders').select('id').limit(1);
         if (error) {
             console.warn('⚠️  Supabase connection failed, falling back to mock data');
             useMockData = true;
@@ -201,17 +201,55 @@ app.get('/api/metrics/today', async (req, res) => {
         const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
+        const startOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+        const endOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        // Fetch Today's Orders
         const { data: orders, error } = await supabase
             .from('orders')
-            .select('total, status')
+            .select('total, created_at') // Added created_at for hourly trend
             .gte('created_at', startOfDay.toISOString())
             .lt('created_at', endOfDay.toISOString());
 
         if (error) throw error;
 
+        // Fetch Yesterday's Orders (for comparison)
+        const { data: yesterdayOrders, error: yestError } = await supabase
+            .from('orders')
+            .select('total')
+            .gte('created_at', startOfYesterday.toISOString())
+            .lt('created_at', endOfYesterday.toISOString());
+
+        if (yestError) throw yestError;
+
+        // Calculate Today's metrics
         const totalOrders = orders.length;
         const gmv = orders.reduce((sum, order) => sum + parseFloat(order.total), 0);
         const averageOrderValue = totalOrders > 0 ? gmv / totalOrders : 0;
+
+        // Calculate Yesterday's metrics
+        const yestTotalOrders = yesterdayOrders.length;
+        const yestGmv = yesterdayOrders.reduce((sum, order) => sum + parseFloat(order.total), 0);
+        const yestAov = yestTotalOrders > 0 ? yestGmv / yestTotalOrders : 0;
+
+        // Helper for percent change
+        const calcChange = (current, previous) => {
+            if (previous === 0) return current > 0 ? 100 : 0;
+            return +(((current - previous) / previous) * 100).toFixed(1);
+        };
+
+        // Calculate Hourly Trend (9 AM to 9 PM window to match mock data structure, or 24h?)
+        // Mock data was 13 items. Let's do 9AM - 9PM (13 hours) or just map hours present.
+        // Frontend expects array of sales numbers. 
+        // Let's create a 13-hour bucket (9:00 to 21:00)
+        const hourlyBuckets = Array(13).fill(0);
+        orders.forEach(o => {
+            const h = new Date(o.created_at).getHours();
+            const index = h - 9; // 9 = index 0
+            if (index >= 0 && index < 13) {
+                hourlyBuckets[index] += parseFloat(o.total);
+            }
+        });
 
         res.json({
             success: true,
@@ -220,8 +258,12 @@ app.get('/api/metrics/today', async (req, res) => {
                 totalOrders,
                 averageOrderValue: parseFloat(averageOrderValue.toFixed(2)),
                 date: startOfDay.toISOString().split('T')[0],
-                hourlyTrend: Array(12).fill(0), // Placeholder for real DB
-                percentChange: { gmv: 0, orders: 0, aov: 0 } // Placeholder
+                hourlyTrend: hourlyBuckets,
+                percentChange: {
+                    gmv: calcChange(gmv, yestGmv),
+                    orders: calcChange(totalOrders, yestTotalOrders),
+                    aov: calcChange(averageOrderValue, yestAov)
+                }
             }
         });
 
