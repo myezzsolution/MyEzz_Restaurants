@@ -90,39 +90,102 @@ app.get('/health', (req, res) => {
     });
 });
 
-// Get today's metrics (GMV, Total Orders, Average Order Value)
+// --- MOCK DATA TRUTH STORE ---
+// This ensures all charts and metrics are mathematically consistent
+
+const generateHourlyData = (hours) => {
+    return Array.from({ length: hours }, (_, i) => ({
+        time: `${i + 9}:00`, // 9 AM start
+        sales: Math.floor(Math.random() * 4000) + 500,
+        orders: Math.floor(Math.random() * 12) + 2
+    }));
+};
+
+const generateDailyData = (days) => {
+    const dates = [];
+    for (let i = days - 1; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        dates.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    }
+    return dates.map(date => ({
+        date,
+        sales: Math.floor(Math.random() * 25000) + 8000,
+        orders: Math.floor(Math.random() * 70) + 20
+    }));
+};
+
+// Initialize the Truth Store
+const mockStore = {
+    today: generateHourlyData(13), // 9 AM to 9 PM
+    yesterday: generateHourlyData(13),
+    week: generateDailyData(7)
+};
+
+// Start server
+app.listen(PORT, () => {
+    console.log('\n' + '='.repeat(60));
+    console.log('🚀 MyEzz Restaurant Backend Server');
+    console.log('='.repeat(60));
+    console.log(`✅ Server running on http://localhost:${PORT}`);
+    // ... rest of startup log
+});
+
+
+// Get today's metrics (Centralized Calculation)
 app.get('/api/metrics/today', async (req, res) => {
     try {
+        if (useMockData) {
+            // Calculate Today's Totals
+            const todaySales = mockStore.today.reduce((acc, curr) => acc + curr.sales, 0);
+            const todayOrders = mockStore.today.reduce((acc, curr) => acc + curr.orders, 0);
+            const todayAOV = todayOrders > 0 ? (todaySales / todayOrders) : 0;
+
+            // Calculate Yesterday's Totals (for comparison)
+            const yestSales = mockStore.yesterday.reduce((acc, curr) => acc + curr.sales, 0);
+            const yestOrders = mockStore.yesterday.reduce((acc, curr) => acc + curr.orders, 0);
+            const yestAOV = yestOrders > 0 ? (yestSales / yestOrders) : 0;
+
+            // Calculate Percent Changes
+            const calcChange = (current, previous) => {
+                if (previous === 0) return 100;
+                return +(((current - previous) / previous) * 100).toFixed(1);
+            };
+
+            res.json({
+                success: true,
+                data: {
+                    gmv: todaySales,
+                    totalOrders: todayOrders,
+                    averageOrderValue: +todayAOV.toFixed(0),
+                    date: new Date().toISOString().split('T')[0],
+                    hourlyTrend: mockStore.today.map(d => d.sales), // Sparkline data matches chart!
+                    percentChange: {
+                        gmv: calcChange(todaySales, yestSales),
+                        orders: calcChange(todayOrders, yestOrders),
+                        aov: calcChange(todayAOV, yestAOV)
+                    }
+                }
+            });
+            return;
+        }
+
+        // ... Existing Supabase logic ...
         const now = new Date();
         const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
-        let orders;
+        const { data: orders, error } = await supabase
+            .from('orders')
+            .select('total, status')
+            .gte('created_at', startOfDay.toISOString())
+            .lt('created_at', endOfDay.toISOString());
 
-        if (useMockData) {
-            // Use mock data
-            orders = mockOrders.filter(order => {
-                const orderDate = new Date(order.created_at);
-                return orderDate >= startOfDay && orderDate < endOfDay;
-            });
-        } else {
-            // Use Supabase
-            const { data, error } = await supabase
-                .from('orders')
-                .select('total, status')
-                .gte('created_at', startOfDay.toISOString())
-                .lt('created_at', endOfDay.toISOString());
+        if (error) throw error;
 
-            if (error) throw error;
-            orders = data;
-        }
-
-        // Calculate metrics
         const totalOrders = orders.length;
         const gmv = orders.reduce((sum, order) => sum + parseFloat(order.total), 0);
         const averageOrderValue = totalOrders > 0 ? gmv / totalOrders : 0;
-
-        console.log(`📊 Metrics: GMV=₹${gmv.toFixed(2)}, Orders=${totalOrders}, AOV=₹${averageOrderValue.toFixed(2)}`);
 
         res.json({
             success: true,
@@ -130,16 +193,15 @@ app.get('/api/metrics/today', async (req, res) => {
                 gmv: parseFloat(gmv.toFixed(2)),
                 totalOrders,
                 averageOrderValue: parseFloat(averageOrderValue.toFixed(2)),
-                date: startOfDay.toISOString().split('T')[0]
+                date: startOfDay.toISOString().split('T')[0],
+                hourlyTrend: Array(12).fill(0), // Placeholder for real DB
+                percentChange: { gmv: 0, orders: 0, aov: 0 } // Placeholder
             }
         });
+
     } catch (error) {
         console.error('Error fetching metrics:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Failed to fetch metrics',
-            message: error.message
-        });
+        res.status(500).json({ success: false, error: 'Failed' });
     }
 });
 
@@ -261,26 +323,106 @@ app.delete('/api/orders/:orderId', async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
+// --- REPORTS API ENDPOINTS ---
 
-// Start server
-app.listen(PORT, () => {
-    console.log('\n' + '='.repeat(60));
-    console.log('🚀 MyEzz Restaurant Backend Server');
-    console.log('='.repeat(60));
-    console.log(`✅ Server running on http://localhost:${PORT}`);
-    console.log(`📊 Metrics endpoint: http://localhost:${PORT}/api/metrics/today`);
-    console.log(`💚 Health check: http://localhost:${PORT}/health`);
-    console.log(`📦 All orders: http://localhost:${PORT}/api/orders`);
-    console.log('');
+// 1. Sales Trend Data
+app.get('/api/reports/sales', async (req, res) => {
+    try {
+        const { range } = req.query; // 'today', 'yesterday', '7days'
 
-    if (useMockData) {
-        console.log('💡 Mode: MOCK - Using in-memory data (no Supabase required)');
-        console.log(`📝 Current orders in database: ${mockOrders.length}`);
-        console.log('💭 To use Supabase: Add credentials to backend/.env file');
-    } else {
-        console.log('💡 Mode: PRODUCTION - Connected to Supabase');
-        console.log('📝 Using live database');
+        if (useMockData) {
+            let data = [];
+            if (range === 'today') data = mockStore.today;
+            else if (range === 'yesterday') data = mockStore.yesterday;
+            else data = mockStore.week;
+
+            res.json({ success: true, data });
+        } else {
+            // ... Real DB implementations would go here
+            res.json({ success: true, data: [] });
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
     }
-
-    console.log('='.repeat(60) + '\n');
 });
+
+// 2. Order Stats
+app.get('/api/reports/orders', async (req, res) => {
+    // In real app: SQL COUNT(*) queries
+    res.json({
+        success: true,
+        data: {
+            received: 154,
+            accepted: 142,
+            rejected: 8,
+            cancelled: 4,
+            avgPrepTime: '18 min',
+            completionRate: 92
+        }
+    });
+});
+
+// 3. Menu Performance
+app.get('/api/reports/menu', async (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            topItems: [
+                { name: 'Paneer Butter Masala', orders: 145, revenue: 36250 },
+                { name: 'Chicken Biryani', orders: 132, revenue: 39600 },
+                { name: 'Garlic Naan', orders: 210, revenue: 10500 },
+                { name: 'Butter Chicken', orders: 98, revenue: 29400 },
+                { name: 'Veg Hakka Noodles', orders: 85, revenue: 15300 }
+            ],
+            leastItems: [
+                { name: 'Plain Rice', orders: 12, revenue: 1200 },
+                { name: 'Green Salad', orders: 8, revenue: 960 },
+                { name: 'Raita', orders: 5, revenue: 250 }
+            ]
+        }
+    });
+});
+
+// 4. Busy Hours (Heatmap)
+app.get('/api/reports/heatmap', async (req, res) => {
+    res.json({
+        success: true,
+        data: [
+            { name: '12 PM', value: 40 },
+            { name: '1 PM', value: 85 },
+            { name: '2 PM', value: 60 },
+            { name: '3 PM', value: 20 },
+            { name: '7 PM', value: 50 },
+            { name: '8 PM', value: 100 },
+            { name: '9 PM', value: 90 },
+            { name: '10 PM', value: 45 },
+        ]
+    });
+});
+
+// 5. Customer Insights
+app.get('/api/reports/customers', async (req, res) => {
+    res.json({
+        success: true,
+        data: {
+            newCustomers: 45,
+            returningCustomers: 83,
+            repeatRate: 65,
+            avgOrdersPerCustomer: 2.4
+        }
+    });
+});
+
+// 6. Auto Insights
+app.get('/api/reports/insights', async (req, res) => {
+    res.json({
+        success: true,
+        data: [
+            { type: 'warning', text: 'Orders dropped by 20% compared to yesterday around 2 PM.' },
+            { type: 'success', text: 'Paneer Butter Masala is your top-selling item today!' },
+            { type: 'info', text: 'Avg prep time increased by 3 mins during dinner hours.' }
+        ]
+    });
+});
+
+

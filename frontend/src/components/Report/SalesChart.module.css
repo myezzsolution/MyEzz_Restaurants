@@ -1,0 +1,65 @@
+.noData {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94A3B8;
+    background: #F8FAFC;
+    border-radius: 8px;
+}
+
+.chartContainer {
+    width: 100%;
+    height: 300px;
+}
+
+.tooltip {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #E2E8F0;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+}
+
+.tooltipLabel {
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.tooltipItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.tooltipItem:last-child {
+    margin-bottom: 0;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.tooltipText {
+    color: #475569;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.tooltipText strong {
+    color: #1E293B;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .chartContainer {
+        height: 250px;
+    }
+}
