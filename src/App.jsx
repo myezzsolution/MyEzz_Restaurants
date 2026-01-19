@@ -46,9 +46,9 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/*" element={<AppLayout />} />
           <Route path="/restaurant/login" element={<RestaurantLogin />} />
           <Route path="/restaurant/signup" element={<RestaurantSignup />} />
+          <Route path="/*" element={<AppLayout />} />
 
 
         </Routes>
