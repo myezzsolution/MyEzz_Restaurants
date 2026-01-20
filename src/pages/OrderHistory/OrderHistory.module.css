@@ -1,0 +1,271 @@
+/* Container Layout */
+.orderHistory {
+    padding: 2rem;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    color: var(--color-pure-white);
+    min-height: calc(100vh - 80px);
+    /* Adjust based on header/footer */
+}
+
+/* Header Section */
+.pageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--color-pure-white);
+}
+
+.downloadBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba(255, 102, 0, 0.1);
+    color: var(--color-sunset-orange);
+    border: var(--border-accent);
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.downloadBtn:hover {
+    background-color: var(--color-sunset-orange);
+    color: var(--color-pure-white);
+    box-shadow: var(--shadow-glow-orange);
+    transform: translateY(-2px);
+}
+
+/* Filters Section */
+.filtersBar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    background-color: var(--color-midnight-slate);
+    padding: 1rem;
+    border-radius: 12px;
+    border: var(--border-subtle);
+    flex-wrap: wrap;
+}
+
+.searchWrapper {
+    flex: 1;
+    position: relative;
+    min-width: 250px;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-slate-silver);
+    pointer-events: none;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--color-pure-white);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: var(--color-sunset-orange);
+    box-shadow: 0 0 0 2px rgba(255, 102, 0, 0.2);
+}
+
+.filterSelect,
+.dateInput {
+    appearance: none;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    background-color: var(--color-midnight-slate);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: var(--color-pure-white);
+    font-size: 0.95rem;
+    cursor: pointer;
+    min-width: 150px;
+    transition: all 0.2s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1rem;
+}
+
+.filterSelect:hover,
+.dateInput:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.filterSelect:focus,
+.dateInput:focus {
+    outline: none;
+    border-color: var(--color-sunset-orange);
+    box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.15);
+}
+
+/* Table Section */
+.tableContainer {
+    background-color: var(--color-midnight-slate);
+    border-radius: 16px;
+    border: var(--border-subtle);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table th {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+    color: var(--color-slate-silver);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    border-bottom: var(--border-subtle);
+}
+
+.table td {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--color-pure-white);
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tr:hover td {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.orderId {
+    font-family: monospace;
+    color: var(--color-sunset-orange);
+    font-weight: 600;
+}
+
+.customerName {
+    font-weight: 600;
+}
+
+.itemsList {
+    color: var(--color-slate-silver);
+    font-size: 0.9rem;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.amount {
+    font-weight: 700;
+    font-feature-settings: "tnum";
+}
+
+/* Status Badges */
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.statusCompleted {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: var(--color-emerald-green);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.statusCancelled {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.statusRefunded {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* Empty State */
+.emptyState {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-slate-silver);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .orderHistory {
+        padding: 1rem;
+    }
+
+    .filtersBar {
+        flex-direction: column;
+    }
+
+    .searchWrapper,
+    .filterSelect,
+    .dateInput {
+        width: 100%;
+    }
+
+    .table th,
+    .table td {
+        padding: 1rem;
+    }
+
+    /* Could switch to card view for mobile, but keeping table scrollable for now */
+    .tableContainer {
+        overflow-x: auto;
+    }
+}
+
+.actionBtn {
+    background: transparent;
+    border: 1px solid rgba(255, 102, 0, 0.2);
+    color: var(--color-sunset-orange);
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actionBtn:hover {
+    background-color: var(--color-sunset-orange);
+    color: var(--color-pure-white);
+    box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+}

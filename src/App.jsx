@@ -9,12 +9,14 @@ import Menu from './pages/Menu/Menu';
 import Report from './pages/Report/Report';
 import Profile from './pages/Profile/Profile';
 import Landing from './pages/Landing/Landing';
+import OrderHistory from './pages/OrderHistory/OrderHistory';
+
 import './App.css';
 
 // Layout for restaurant-specific pages
 function RestaurantLayout() {
   const { restaurantId } = useParams();
-  
+
   // Basic validation: if restaurantId is not a valid number, redirect to default
   const numericId = parseInt(restaurantId, 10);
   if (isNaN(numericId) || numericId <= 0) {
@@ -41,6 +43,8 @@ function RestaurantLayoutContent() {
             <Route path="orders" element={<Dashboard />} />
             <Route path="menu" element={<Menu />} />
             <Route path="report" element={<Report />} />
+            <Route path="history" element={<OrderHistory />} />
+
             <Route path="" element={<Navigate to="menu" replace />} />
           </Routes>
           <Footer />
