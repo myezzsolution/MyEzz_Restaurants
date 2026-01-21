@@ -1,10 +1,6 @@
-// Supabase credentials to be replaced when provided by project head
+import { createClient } from "@supabase/supabase-js";
 
-import { createClient } from "@supabase/supabase-js"
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(
-  "https://placeholder.supabase.co",
-  "public-anon-key-placeholder"
-)
-
-
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);

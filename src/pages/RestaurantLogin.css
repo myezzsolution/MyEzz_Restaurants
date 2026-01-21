@@ -1,12 +1,17 @@
+
+
 .container {
     background-color: #fff !important;
     border-radius: 30px !important;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35) !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35) !important;
     position: relative !important;
     overflow: hidden !important;
-    width: 768px !important;
-    max-width: 100% !important;
-    min-height: 480px !important;
+
+    width: 1000px !important;       /* ⬅️ BIGGER */
+    max-width: 95% !important;
+    min-height: 620px !important;   /* ⬅️ TALLER */
+
+    margin: 0 auto !important;
 }
 
 .container .title {
@@ -53,26 +58,25 @@
 .form-container input {
     background-color: #eee !important;
     border: none !important;
-    margin: 8px 0 !important;
-    padding: 10px 15px !important;
-    font-size: 13px !important;
-    border-radius: 8px !important;
+    margin: 12px 0 !important;
+    padding: 14px 18px !important;
+    font-size: 15px !important;
+    border-radius: 10px !important;
     width: 100% !important;
     outline: none !important;
-    color: #333 !important; /* Force dark text */
+    color: #333 !important;
 }
 
 .btn-main {
     background-color: #ff4b2b !important;
     color: #fff !important;
-    font-size: 12px !important;
-    padding: 10px 45px !important;
-    border: 1px solid transparent !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.5px !important;
+    font-size: 14px !important;
+    padding: 14px 52px !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.6px !important;
     text-transform: uppercase !important;
-    margin-top: 10px !important;
+    margin-top: 20px !important;
     cursor: pointer !important;
 }
 
@@ -116,7 +120,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 0 30px;
+    padding: 0 60px;
     text-align: center;
     top: 0;
     transform: translateX(0);
@@ -139,16 +143,38 @@
     cursor: pointer !important;
 }
 
-/* This targets the "Don't have an account?" and "Already have an account?" text */
 .toggle-panel p {
-    color: #FFFFFF !important; /* Pure white for maximum visibility */
+    color: #FFFFFF !important; 
     font-weight: 500 !important;
-    opacity: 1 !important;     /* Ensures no transparency is hiding the text */
+    opacity: 1 !important;   
     margin: 20px 0 !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
 }
 
-/* If you want the "Welcome Back" headings to be even bolder */
 .toggle-panel h1 {
     color: #FFFFFF !important;
     font-weight: 800 !important;
+    font-size: 2.4rem !important;
+}
+
+.form-container a {
+    color: #ff4b2b !important;     
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.form-container a:hover {
+    color: #d63b22 !important;      
+    text-decoration: underline;
+}
+
+.form-container a:visited {
+    color: #ff4b2b !important;
+}
+
+.form-container a:focus {
+    outline: none;
 }

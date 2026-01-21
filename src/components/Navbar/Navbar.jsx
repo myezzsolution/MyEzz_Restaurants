@@ -11,6 +11,7 @@ const Navbar = () => {
   // Ensure we have a valid ID, fallback to 1 if missing (though routing handles this)
   const currentId = restaurantId || '1';
 
+  
   const navigationItems = [
     {
       path: `/${currentId}/orders`,
@@ -18,6 +19,7 @@ const Navbar = () => {
       icon: Home,
       ariaLabel: 'Navigate to Orders'
     },
+    
     {
       path: `/${currentId}/history`,
       name: 'History',
