@@ -93,6 +93,7 @@ function Landing() {
       {showLogoutToast && (
         <SuccessToast 
           message="Logged out successfully"
+          duration={4000}
           isVisible={showLogoutToast}
           onClose={() => setShowLogoutToast(false)}
         />

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Check } from 'lucide-react';
-import styles from './SuccessToast.module.css';
+import { AlertCircle } from 'lucide-react';
+import styles from './SuccessToast.module.css'; // Reusing styles for consistency, will override colors inline or with new class
 
-const SuccessToast = ({ 
-  message = "Your settings have been saved", 
+const WarningToast = ({ 
+  message = "Warning", 
   duration = 3000, 
   onClose,
   isVisible = true 
@@ -18,7 +18,7 @@ const SuccessToast = ({
         setShow(false);
         setTimeout(() => {
           if (onClose) onClose();
-        }, 300); // Wait for fade-out animation
+        }, 300);
       }, duration);
 
       return () => clearTimeout(timer);
@@ -28,12 +28,15 @@ const SuccessToast = ({
   if (!isVisible && !show) return null;
 
   return createPortal(
-    <div className={`${styles.toast} ${show ? styles.visible : styles.hidden}`}>
-      <Check size={20} strokeWidth={3} className={styles.icon} />
+    <div 
+      className={`${styles.toast} ${show ? styles.visible : styles.hidden}`}
+      style={{ background: '#FF3B30', boxShadow: '0 10px 40px rgba(255, 59, 48, 0.3)' }}
+    >
+      <AlertCircle size={20} strokeWidth={2.5} className={styles.icon} />
       <span className={styles.message}>{message}</span>
     </div>,
     document.body
   );
 };
 
-export default SuccessToast;
+export default WarningToast;

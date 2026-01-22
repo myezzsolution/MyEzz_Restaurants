@@ -4,6 +4,7 @@ import OrderCard from '../../components/OrderCard/OrderCard';
 import PrepTimeModal from '../../components/PrepTimeModal/PrepTimeModal';
 import RejectionModal from '../../components/RejectionModal/RejectionModal';
 import RingSpinner from '../../components/Spinner/Spinner';
+import WarningToast from '../../components/ui/WarningToast';
 import styles from './Dashboard.module.css';
 
 function Dashboard() {
@@ -14,6 +15,7 @@ function Dashboard() {
   const [orderToReject, setOrderToReject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('new'); // For mobile tab view
+  const [warningId, setWarningId] = useState(0);
 
   // Sound notification
   const lastOrderCountRef = useRef(0);
@@ -45,6 +47,10 @@ function Dashboard() {
 
   const enableSound = () => {
     playSound();
+  };
+
+  const handleValidationFail = () => {
+    setWarningId(Date.now());
   };
 
   useEffect(() => {
@@ -309,6 +315,7 @@ function Dashboard() {
                   <OrderCard
                     order={order}
                     onMarkReady={handleMarkReady}
+                    onValidationFail={handleValidationFail}
                   />
                 </motion.div>
               ))}
@@ -369,6 +376,17 @@ function Dashboard() {
         onConfirm={handleConfirmReject}
         orderDetails={orderToReject}
       />
+
+      {/* Warning Toast for Validation Feedback */}
+      {warningId > 0 && (
+        <WarningToast 
+            key={warningId}
+            message="Please tick all items as done before marking ready" 
+            isVisible={true}
+            onClose={() => setWarningId(0)}
+            duration={3000}
+        />
+      )}
     </div>
   );
 }

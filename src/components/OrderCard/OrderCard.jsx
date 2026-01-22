@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Clock, CheckCircle, User, Check } from 'lucide-react';
 import styles from './OrderCard.module.css';
 
-const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider }) => {
+const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider, onValidationFail }) => {
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [checkedItems, setCheckedItems] = useState(new Set());
@@ -71,6 +71,14 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider }) =>
       newChecked.add(index);
     }
     setCheckedItems(newChecked);
+  };
+
+  const handleMarkReady = () => {
+     if (checkedItems.size !== order.items.length) {
+       if (onValidationFail) onValidationFail();
+       return;
+     }
+     onMarkReady(order.id);
   };
 
   return (
@@ -160,14 +168,8 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider }) =>
         {order.status === 'preparing' && (
           <button 
             className={styles.markReadyBtn}
-            onClick={() => onMarkReady(order.id)}
-            disabled={checkedItems.size !== order.items.length}
-            style={{ 
-              opacity: checkedItems.size !== order.items.length ? 0.5 : 1, 
-              cursor: checkedItems.size !== order.items.length ? 'not-allowed' : 'pointer',
-              filter: checkedItems.size !== order.items.length ? 'grayscale(100%)' : 'none'
-            }}
-            title={checkedItems.size !== order.items.length ? "Check all items to mark ready" : "Mark order as ready"}
+            onClick={handleMarkReady}
+            title="Mark order as ready"
           >
             <CheckCircle size={16} />
             Mark Ready
