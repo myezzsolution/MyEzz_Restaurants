@@ -1,17 +1,19 @@
 .container {
-    background-color: #fff !important;
-    border-radius: 30px !important;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35) !important;
+    background-color: #1e1e1e !important;
+    border-radius: 24px !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5) !important;
     position: relative !important;
     overflow: hidden !important;
-    width: 768px !important;
-    max-width: 100% !important;
-    min-height: 480px !important;
+    width: 800px !important;
+    max-width: 95% !important;
+    min-height: 500px !important;
 }
 
 .container .title {
-    color: #333 !important;
-    margin-bottom: 10px;
+    color: #fff !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    margin-bottom: 20px !important;
 }
 
 .form-container {
@@ -50,32 +52,126 @@
     50%, 100% { opacity: 1; z-index: 5; }
 }
 
-.form-container input {
-    background-color: #eee !important;
-    border: none !important;
+/* Social Icons */
+.social-icons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.social-icons a.icon {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-icons a.icon:hover {
+    border-color: #FF6600;
+    color: #FF6600;
+    transform: translateY(-2px);
+}
+
+/* Form Inputs */
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"] {
+    background-color: #2a2a2a !important;
+    border: 1px solid #3a3a3a !important;
     margin: 8px 0 !important;
-    padding: 10px 15px !important;
-    font-size: 13px !important;
+    padding: 14px 16px !important;
+    font-size: 14px !important;
     border-radius: 8px !important;
     width: 100% !important;
     outline: none !important;
-    color: #333 !important; /* Force dark text */
+    color: #fff !important;
+    transition: all 0.3s ease !important;
 }
 
+.form-container input[type="text"]:focus,
+.form-container input[type="email"]:focus,
+.form-container input[type="password"]:focus {
+    border-color: #FF6600 !important;
+    background-color: #333 !important;
+    box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1) !important;
+}
+
+.form-container input::placeholder {
+    color: #666 !important;
+}
+
+/* Custom Checkbox */
+.terms-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 15px 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.terms-checkbox input[type="checkbox"] {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    accent-color: #FF6600;
+    cursor: pointer;
+}
+
+.terms-checkbox .terms-text {
+    font-size: 13px;
+    color: #888;
+}
+
+/* Main Button */
 .btn-main {
-    background-color: #ff4b2b !important;
+    background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%) !important;
     color: #fff !important;
-    font-size: 12px !important;
-    padding: 10px 45px !important;
-    border: 1px solid transparent !important;
+    font-size: 14px !important;
+    padding: 14px 50px !important;
+    border: none !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
     letter-spacing: 0.5px !important;
     text-transform: uppercase !important;
-    margin-top: 10px !important;
+    margin-top: 15px !important;
     cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3) !important;
 }
 
+.btn-main:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 25px rgba(255, 102, 0, 0.4) !important;
+}
+
+.btn-main:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+/* Forgot Password Link */
+.form-container a.forgot {
+    color: #888 !important;
+    font-size: 13px !important;
+    text-decoration: none !important;
+    margin: 15px 0 5px !important;
+    transition: all 0.2s ease !important;
+}
+
+.form-container a.forgot:hover {
+    color: #FF6600 !important;
+}
+
+/* Toggle Container */
 .toggle-container {
     position: absolute;
     top: 0;
@@ -93,8 +189,7 @@
 }
 
 .toggle {
-    background-color: #512da8;
-    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    background: linear-gradient(135deg, #FF6600 0%, #FF8C00 50%, #FFA500 100%);
     color: #fff;
     position: relative;
     left: -100%;
@@ -116,7 +211,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    padding: 0 30px;
+    padding: 0 40px;
     text-align: center;
     top: 0;
     transform: translateX(0);
@@ -129,26 +224,117 @@
 .toggle-right { right: 0; transform: translateX(0); }
 .container.active .toggle-right { transform: translateX(200%); }
 
-.hidden {
-    background-color: transparent !important;
-    border-color: #fff !important;
-    color: #fff !important;
-    border: 1px solid #fff !important;
-    padding: 10px 45px !important;
-    border-radius: 8px !important;
-    cursor: pointer !important;
-}
-
-/* This targets the "Don't have an account?" and "Already have an account?" text */
-.toggle-panel p {
-    color: #FFFFFF !important; /* Pure white for maximum visibility */
-    font-weight: 500 !important;
-    opacity: 1 !important;     /* Ensures no transparency is hiding the text */
-    margin: 20px 0 !important;
-}
-
-/* If you want the "Welcome Back" headings to be even bolder */
+/* Toggle Panel Text */
 .toggle-panel h1 {
     color: #FFFFFF !important;
     font-weight: 800 !important;
+    font-size: 28px !important;
+    margin-bottom: 10px !important;
+}
+
+.toggle-panel p {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    margin: 15px 0 25px !important;
+}
+
+/* Toggle Button - SOLID for visibility */
+.toggle-btn {
+    background-color: #fff !important;
+    color: #FF6600 !important;
+    border: none !important;
+    padding: 12px 40px !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.toggle-btn:hover {
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Signup Button Enhancement */
+.btn-signup {
+    background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%) !important;
+    font-size: 15px !important;
+    padding: 16px 50px !important;
+    letter-spacing: 1px !important;
+}
+
+/* Login Page Footer */
+.login-footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+}
+
+.login-footer .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.login-footer .footer-logo {
+    height: 28px;
+    opacity: 0.9;
+}
+
+.login-footer .footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.login-footer .footer-links a {
+    color: #888;
+    text-decoration: none;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s ease;
+}
+
+.login-footer .footer-links a:hover {
+    color: #FF6600;
+}
+
+.login-footer .footer-social {
+    display: flex;
+    gap: 15px;
+}
+
+.login-footer .footer-social a {
+    color: #666;
+    padding: 8px;
+    border-radius: 50%;
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.login-footer .footer-social a:hover {
+    color: #FF6600;
+    border-color: #FF6600;
+    transform: translateY(-2px);
+}
+
+.login-footer .footer-copyright {
+    color: #555;
+    font-size: 12px;
+    margin: 0;
 }

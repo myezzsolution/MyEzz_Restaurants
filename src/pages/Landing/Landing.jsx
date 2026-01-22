@@ -70,7 +70,7 @@ function Landing() {
   }, []);
 
   const handleGetStarted = () => {
-    navigate('/signup');
+    navigate('/login');
   };
 
   const handleSignIn = () => {

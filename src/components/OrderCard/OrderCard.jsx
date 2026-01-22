@@ -161,6 +161,13 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider }) =>
           <button 
             className={styles.markReadyBtn}
             onClick={() => onMarkReady(order.id)}
+            disabled={checkedItems.size !== order.items.length}
+            style={{ 
+              opacity: checkedItems.size !== order.items.length ? 0.5 : 1, 
+              cursor: checkedItems.size !== order.items.length ? 'not-allowed' : 'pointer',
+              filter: checkedItems.size !== order.items.length ? 'grayscale(100%)' : 'none'
+            }}
+            title={checkedItems.size !== order.items.length ? "Check all items to mark ready" : "Mark order as ready"}
           >
             <CheckCircle size={16} />
             Mark Ready
