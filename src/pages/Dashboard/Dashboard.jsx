@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import OrderCard from '../../components/OrderCard/OrderCard';
 import PrepTimeModal from '../../components/PrepTimeModal/PrepTimeModal';
 import RejectionModal from '../../components/RejectionModal/RejectionModal';
 import RingSpinner from '../../components/Spinner/Spinner';
+import WarningToast from '../../components/ui/WarningToast';
 import styles from './Dashboard.module.css';
 
 function Dashboard() {
@@ -14,6 +15,43 @@ function Dashboard() {
   const [orderToReject, setOrderToReject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('new'); // For mobile tab view
+  const [warningId, setWarningId] = useState(0);
+
+  // Sound notification
+  const lastOrderCountRef = useRef(0);
+  const [isSoundBlocked, setIsSoundBlocked] = useState(false);
+
+  const playSound = async () => {
+    try {
+      const audio = new Audio('/ding.mp3');
+      await audio.play();
+      setIsSoundBlocked(false);
+    } catch (error) {
+      console.error('Error playing notification sound:', error);
+      if (error.name === 'NotAllowedError') {
+        setIsSoundBlocked(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const currentNewOrders = orders.filter(o => o.status === 'new').length;
+    
+    // Play sound if we have more new orders than before
+    if (currentNewOrders > lastOrderCountRef.current) {
+      playSound();
+    }
+    
+    lastOrderCountRef.current = currentNewOrders;
+  }, [orders]);
+
+  const enableSound = () => {
+    playSound();
+  };
+
+  const handleValidationFail = () => {
+    setWarningId(Date.now());
+  };
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -149,7 +187,29 @@ function Dashboard() {
   return (
     <div className={styles.dashboard}>
       <div className={styles.dashboardHeader}>
-        <h1 className={styles.title}>Orders</h1> {/* Changed from Kitchen Dashboard to Orders */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h1 className={styles.title}>Orders</h1> 
+          {isSoundBlocked && (
+            <button 
+              onClick={enableSound}
+              style={{
+                backgroundColor: '#FF6600',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontWeight: 'bold'
+              }}
+            >
+              Enable Sound 🔔
+            </button>
+          )}
+        </div>
         <div className={styles.statsRibbon}>
           <div className={styles.stat}>
             <span className={styles.statNumber}>{newOrders.length}</span>
@@ -255,6 +315,7 @@ function Dashboard() {
                   <OrderCard
                     order={order}
                     onMarkReady={handleMarkReady}
+                    onValidationFail={handleValidationFail}
                   />
                 </motion.div>
               ))}
@@ -315,6 +376,17 @@ function Dashboard() {
         onConfirm={handleConfirmReject}
         orderDetails={orderToReject}
       />
+
+      {/* Warning Toast for Validation Feedback */}
+      {warningId > 0 && (
+        <WarningToast 
+            key={warningId}
+            message="Please tick all items as done before marking ready" 
+            isVisible={true}
+            onClose={() => setWarningId(0)}
+            duration={3000}
+        />
+      )}
     </div>
   );
 }

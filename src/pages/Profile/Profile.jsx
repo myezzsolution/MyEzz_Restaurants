@@ -1,4 +1,4 @@
-
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRestaurant } from '../../context/RestaurantContext';
 import { updateRestaurant } from '../../services/menuService';
@@ -32,6 +32,7 @@ import SuccessToast from '../../components/ui/SuccessToast';
 import styles from './Profile.module.css';
 
 const Profile = () => {
+  const navigate = useNavigate();
   const { isOnline, setOnlineStatus, toggleProfile } = useRestaurant();
   const [showBankDetails, setShowBankDetails] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -178,6 +179,11 @@ const Profile = () => {
       return;
     }
     toggleProfile(false);
+  };
+
+  const handleLogout = () => {
+    // Navigate to landing page with a state flag to show toast
+    navigate('/', { state: { showLogoutToast: true } });
   };
 
   // Merge editable data with original data
@@ -529,7 +535,7 @@ const Profile = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.15 }}
           >
-            <button className={styles.logoutBtn}>
+            <button className={styles.logoutBtn} onClick={handleLogout}>
               <LogOut />
               <span>Logout</span>
             </button>

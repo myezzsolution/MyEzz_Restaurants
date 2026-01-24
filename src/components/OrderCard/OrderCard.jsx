@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Clock, CheckCircle, User, Check } from 'lucide-react';
 import styles from './OrderCard.module.css';
 
-const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider }) => {
+const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider, onValidationFail }) => {
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [checkedItems, setCheckedItems] = useState(new Set());
@@ -71,6 +71,14 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider }) =>
       newChecked.add(index);
     }
     setCheckedItems(newChecked);
+  };
+
+  const handleMarkReady = () => {
+     if (checkedItems.size !== order.items.length) {
+       if (onValidationFail) onValidationFail();
+       return;
+     }
+     onMarkReady(order.id);
   };
 
   return (
@@ -160,7 +168,8 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider }) =>
         {order.status === 'preparing' && (
           <button 
             className={styles.markReadyBtn}
-            onClick={() => onMarkReady(order.id)}
+            onClick={handleMarkReady}
+            title="Mark order as ready"
           >
             <CheckCircle size={16} />
             Mark Ready
