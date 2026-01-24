@@ -82,10 +82,19 @@ export default function RestaurantLogin() {
 
   // Mobile Login Layout
   const MobileLoginForm = () => (
-    <div className="mobile-login-card">
-      {/* Image Header with Logo and Welcome Text */}
-      <div className="mobile-card-header">
-        <span className="mobile-logo-text">MyEzz</span>
+    <motion.div 
+      className="mobile-login-fullscreen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
+      {/* Image Header with Welcome Text */}
+      <motion.div 
+        className="mobile-card-header"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
         <h1 className="mobile-welcome-text">Welcome Back,<br />Partner!</h1>
         {/* Curved Separator SVG */}
         <div className="mobile-curve-separator">
@@ -93,10 +102,15 @@ export default function RestaurantLogin() {
             <path d="M0,20 Q50,0 100,20 L100,20 L0,20 Z" fill="#FFFFFF" />
           </svg>
         </div>
-      </div>
+      </motion.div>
       
       {/* White Form Section */}
-      <div className="mobile-form-section">
+      <motion.div 
+        className="mobile-form-section"
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         <div className="mobile-input-group">
           <User className="mobile-input-icon" size={22} />
           <input 
@@ -126,43 +140,72 @@ export default function RestaurantLogin() {
         <div className="mobile-toggle-text">
           Don't have an account? <a onClick={() => setIsActive(true)}>Create Account</a>
         </div>
-      </div>
+      </motion.div>
       
       {/* Footer */}
-      <div className="mobile-card-footer">
-        <div className="mobile-footer-links">
+      <motion.div 
+        className="mobile-fullscreen-footer"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.4 }}
+      >
+        <div className="mobile-footer-row">
           <a href="https://my-ezz.vercel.app/" target="_blank" rel="noopener noreferrer">MyEzz</a>
           <a href="https://myezzofficial.netlify.app/about" target="_blank" rel="noopener noreferrer">About</a>
           <a href="https://myezzofficial.netlify.app/contact" target="_blank" rel="noopener noreferrer">Contact</a>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-          <div className="mobile-footer-social">
-            <a href="#" aria-label="Facebook"><Facebook size={18} /></a>
-            <a href="#" aria-label="Twitter"><Twitter size={18} /></a>
-            <a href="https://www.instagram.com/mycravezz/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram size={18} /></a>
-          </div>
-          <span className="mobile-footer-copyright">© Copyright MyEzz</span>
+        <div className="mobile-footer-row">
+          <a href="https://www.instagram.com/mycravezz/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram size={20} /></a>
+          <a href="tel:+918097021356" aria-label="Phone"><Phone size={20} /></a>
+          <a href="mailto:myeasycheckout@gmail.com" aria-label="Email"><Mail size={20} /></a>
         </div>
-      </div>
-    </div>
+        <span className="mobile-footer-copyright">© 2026 MyEzz Partner. All rights reserved.</span>
+      </motion.div>
+    </motion.div>
   );
 
   // Mobile Signup Layout
   const MobileSignupForm = () => (
-    <div className="mobile-login-card">
+    <motion.div 
+      className="mobile-login-fullscreen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
+      {/* Back Button */}
+      <motion.button 
+        className="mobile-back-btn" 
+        onClick={() => setIsActive(false)}
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        ← Back to Login
+      </motion.button>
       {/* Image Header */}
-      <div className="mobile-card-header" style={{ height: '200px' }}>
-        <span className="mobile-logo-text">MyEzz</span>
-        <h1 className="mobile-welcome-text" style={{ fontSize: '1.75rem' }}>Create Your<br />Partner Account</h1>
+      <motion.div 
+        className="mobile-card-header mobile-signup-header"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <h1 className="mobile-welcome-text" style={{ fontSize: '1.5rem' }}>Create Your<br />Partner Account</h1>
         <div className="mobile-curve-separator">
           <svg viewBox="0 0 100 20" preserveAspectRatio="none">
             <path d="M0,20 Q50,0 100,20 L100,20 L0,20 Z" fill="#FFFFFF" />
           </svg>
         </div>
-      </div>
+      </motion.div>
       
       {/* White Form Section */}
-      <div className="mobile-form-section" style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+      <motion.div 
+        className="mobile-form-section" 
+        style={{ maxHeight: '55vh', overflowY: 'auto' }}
+        initial={{ y: 30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
         <div className="mobile-input-group">
           <Building2 className="mobile-input-icon" size={22} />
           <input 
@@ -251,17 +294,18 @@ export default function RestaurantLogin() {
         <div className="mobile-toggle-text">
           Already have an account? <a onClick={() => setIsActive(false)}>Sign In</a>
         </div>
-      </div>
+      </motion.div>
       
       {/* Footer */}
-      <div className="mobile-card-footer">
-        <div className="mobile-footer-links">
-          <a href="https://my-ezz.vercel.app/" target="_blank" rel="noopener noreferrer">MyEzz</a>
-          <a href="https://myezzofficial.netlify.app/about" target="_blank" rel="noopener noreferrer">About</a>
-        </div>
-        <span className="mobile-footer-copyright">© Copyright MyEzz</span>
-      </div>
-    </div>
+      <motion.div 
+        className="mobile-fullscreen-footer"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.4 }}
+      >
+        <span className="mobile-footer-copyright">© 2026 MyEzz Partner. All rights reserved.</span>
+      </motion.div>
+    </motion.div>
   );
 
   // Mobile Layout
