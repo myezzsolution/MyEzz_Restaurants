@@ -1,79 +1,112 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import OrderCard from '../../components/OrderCard/OrderCard';
 import PrepTimeModal from '../../components/PrepTimeModal/PrepTimeModal';
 import RejectionModal from '../../components/RejectionModal/RejectionModal';
 import RingSpinner from '../../components/Spinner/Spinner';
+import { useRestaurant } from '../../context/RestaurantContext';
+import {
+  initializeSocket,
+  disconnectSocket,
+  fetchOrders,
+  acceptOrder as acceptOrderAPI,
+  rejectOrder as rejectOrderAPI,
+  markOrderReady as markOrderReadyAPI
+} from '../../services/restaurantOrderService';
 import styles from './Dashboard.module.css';
 
 function Dashboard() {
+  const { restaurantId } = useRestaurant();
   const [orders, setOrders] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [rejectionModalOpen, setRejectionModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orderToReject, setOrderToReject] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('new'); // For mobile tab view
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('new');
+
+  const transformOrder = useCallback((apiOrder) => ({
+    id: apiOrder.orderId || apiOrder.order_id,
+    customerName: apiOrder.customerName || apiOrder.customer_name,
+    customerPhone: apiOrder.customerPhone || apiOrder.customer_phone,
+    items: apiOrder.items || [],
+    total: apiOrder.total,
+    status: mapApiStatus(apiOrder.status),
+    apiStatus: apiOrder.status, // Keep original for API calls
+    prepTime: apiOrder.prepTime || apiOrder.prep_time,
+    acceptedAt: apiOrder.acceptedAt || apiOrder.accepted_at,
+    verificationCode: apiOrder.verificationCode || apiOrder.verification_code,
+    createdAt: apiOrder.createdAt || apiOrder.created_at,
+    deliveryAddress: apiOrder.deliveryAddress || apiOrder.delivery_address
+  }), []);
+
+  const mapApiStatus = (apiStatus) => {
+    const statusMap = {
+      'pending_restaurant': 'new',
+      'preparing': 'preparing',
+      'ready_for_pickup': 'ready',
+      'rider_assigned': 'ready',
+      'picked_up': 'completed',
+      'out_for_delivery': 'completed',
+      'delivered': 'completed',
+      'rejected': 'rejected',
+      'cancelled': 'cancelled'
+    };
+    return statusMap[apiStatus] || apiStatus;
+  };
+
+  const loadOrders = useCallback(async () => {
+    if (!restaurantId) return;
+    
+    try {
+      setError(null);
+      const response = await fetchOrders(restaurantId, 'active');
+      if (response.success && response.data) {
+        const transformedOrders = response.data.map(transformOrder);
+        setOrders(transformedOrders);
+      }
+    } catch (err) {
+      console.error('Failed to load orders:', err);
+      setError('Failed to load orders. Please refresh.');
+    } finally {
+      setLoading(false);
+    }
+  }, [restaurantId, transformOrder]);
 
   useEffect(() => {
-    const loadOrders = async () => {
-      setLoading(true);
-
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      const mockOrders = [
-        {
-          id: 'ORD001',
-          customerName: 'Yug Patel',
-          items: [
-            { name: 'Margherita Pizza', quantity: 1 },
-            { name: 'Caesar Salad', quantity: 1 }
-          ],
-          total: 249.99,
-          status: 'new',
-          verificationCode: generateVerificationCode()
-        },
-        {
-          id: 'ORD002',
-          customerName: 'Aksh Maheshwari',
-          items: [
-            { name: 'Chicken Burger', quantity: 2 },
-            { name: 'French Fries', quantity: 1 }
-          ],
-          total: 185.00,
-          status: 'preparing',
-          prepTime: 25,
-          acceptedAt: new Date(Date.now() - 5 * 60 * 1000),
-          verificationCode: generateVerificationCode()
-        },
-        {
-          id: 'ORD003',
-          customerName: 'Nayan Chellani',
-          items: [
-            { name: 'French Fries', quantity: 1 }
-          ],
-          total: 157.50,
-          status: 'ready',
-          verificationCode: generateVerificationCode()
-        }
-      ];
-
-      setOrders(mockOrders);
+    if (!restaurantId) {
       setLoading(false);
-    };
-
-    loadOrders();
-  }, []);
-
-  function generateVerificationCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < 4; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
+      return;
     }
-    return result;
-  }
+
+    setLoading(true);
+    loadOrders();
+
+    const socket = initializeSocket(restaurantId, {
+      onConnect: () => console.log('Connected to order server'),
+      onDisconnect: () => console.log('Disconnected from order server'),
+      onNewOrder: (data) => {
+        const newOrder = transformOrder(data.order);
+        setOrders(prev => {
+          const exists = prev.some(o => o.id === newOrder.id);
+          if (exists) return prev;
+          return [newOrder, ...prev];
+        });
+      },
+      onOrderUpdate: (data) => {
+        if (data.order) {
+          const updatedOrder = transformOrder(data.order);
+          setOrders(prev => prev.map(order => 
+            order.id === updatedOrder.id ? updatedOrder : order
+          ));
+        }
+      },
+      onStatusChange: () => loadOrders()
+    });
+
+    return () => disconnectSocket();
+  }, [restaurantId, loadOrders, transformOrder]);
 
   const handleAcceptOrder = (orderId) => {
     const order = orders.find(o => o.id === orderId);
@@ -87,37 +120,57 @@ function Dashboard() {
     setRejectionModalOpen(true);
   };
 
-  const handleConfirmReject = (reason) => {
-    if (orderToReject) {
-      // In a real app, you would send the rejection reason to the backend here
-      console.log(`Rejecting order ${orderToReject.id} for reason: ${reason}`);
+  const handleConfirmReject = async (reason) => {
+    if (!orderToReject || !restaurantId) return;
+    
+    try {
+      await rejectOrderAPI(restaurantId, orderToReject.id, reason);
       setOrders(orders.filter(order => order.id !== orderToReject.id));
       setOrderToReject(null);
+    } catch (err) {
+      console.error('Failed to reject order:', err);
+      alert('Failed to reject order. Please try again.');
     }
   };
 
-  const handleConfirmPrepTime = (prepTime) => {
-    if (selectedOrder) {
+  const handleConfirmPrepTime = async (prepTime) => {
+    if (!selectedOrder || !restaurantId) return;
+    
+    try {
+      await acceptOrderAPI(restaurantId, selectedOrder.id, prepTime);
       setOrders(orders.map(order =>
         order.id === selectedOrder.id
           ? {
             ...order,
             status: 'preparing',
+            apiStatus: 'preparing',
             prepTime,
-            acceptedAt: new Date()
+            acceptedAt: new Date().toISOString()
           }
           : order
       ));
+      setSelectedOrder(null);
+      setModalOpen(false);
+    } catch (err) {
+      console.error('Failed to accept order:', err);
+      alert('Failed to accept order. Please try again.');
     }
-    setSelectedOrder(null);
   };
 
-  const handleMarkReady = (orderId) => {
-    setOrders(orders.map(order =>
-      order.id === orderId
-        ? { ...order, status: 'ready' }
-        : order
-    ));
+  const handleMarkReady = async (orderId) => {
+    if (!restaurantId) return;
+    
+    try {
+      await markOrderReadyAPI(restaurantId, orderId);
+      setOrders(orders.map(order =>
+        order.id === orderId
+          ? { ...order, status: 'ready', apiStatus: 'ready_for_pickup' }
+          : order
+      ));
+    } catch (err) {
+      console.error('Failed to mark ready:', err);
+      alert('Failed to mark order as ready. Please try again.');
+    }
   };
 
   const handleHandToRider = (orderId) => {
@@ -141,6 +194,22 @@ function Dashboard() {
         <div className={styles.loadingContainer}>
           <RingSpinner size={48} />
           <p className={styles.loadingText}>Loading orders...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.dashboard}>
+        <div className={styles.loadingContainer}>
+          <p className={styles.errorText}>{error}</p>
+          <button 
+            onClick={loadOrders}
+            className={styles.retryButton}
+          >
+            Retry
+          </button>
         </div>
       </div>
     );

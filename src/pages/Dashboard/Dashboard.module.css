@@ -20,6 +20,27 @@
   font-size: 16px;
 }
 
+.errorText {
+  color: #EF4444;
+  font-size: 16px;
+  margin-bottom: 1rem;
+}
+
+.retryButton {
+  background: #FF6600;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.retryButton:hover {
+  background: #E55A00;
+}
+
 .dashboardHeader {
   margin-bottom: 1.5rem;
 }

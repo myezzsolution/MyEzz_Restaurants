@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Clock, CheckCircle, User, Check } from 'lucide-react';
+import { Clock, CheckCircle, User, Check, MapPin } from 'lucide-react';
 import styles from './OrderCard.module.css';
 
 const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider }) => {
@@ -21,19 +21,21 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider }) =>
       }, 1000);
 
       return () => clearInterval(timer);
-    } else if (order.status === 'new') {
+    } else if (order.status === 'new' && order.createdAt) {
       // For new orders, show elapsed time since order was placed
-      const timer = setInterval(() => {
+      const updateElapsed = () => {
         const now = new Date().getTime();
-        // Simulate order creation time (5 minutes ago for demo)
-        const orderTime = now - (5 * 60 * 1000);
+        const orderTime = new Date(order.createdAt).getTime();
         const elapsed = now - orderTime;
         setElapsedTime(elapsed);
-      }, 1000);
+      };
+      
+      updateElapsed();
+      const timer = setInterval(updateElapsed, 1000);
 
       return () => clearInterval(timer);
     }
-  }, [order.status, order.prepTime, order.acceptedAt]);
+  }, [order.status, order.prepTime, order.acceptedAt, order.createdAt]);
 
   const formatElapsedTime = (milliseconds) => {
     const minutes = Math.floor(milliseconds / 60000);
@@ -103,6 +105,24 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider }) =>
         <User size={16} />
         <span className={styles.customerName}>{order.customerName}</span>
       </div>
+
+      {/* Order Time */}
+      {order.createdAt && (
+        <div className={styles.orderTime}>
+          <Clock size={14} />
+          <span>
+            {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </span>
+        </div>
+      )}
+
+      {/* Delivery Address */}
+      {order.deliveryAddress && (
+        <div className={styles.deliveryAddress}>
+          <MapPin size={14} />
+          <span>{order.deliveryAddress}</span>
+        </div>
+      )}
 
       {/* Enhanced Order Items with Checkboxes */}
       <div className={styles.orderItems}>

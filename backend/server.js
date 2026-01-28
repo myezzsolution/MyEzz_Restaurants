@@ -2,9 +2,15 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
+import http from 'http';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
+
+// Import Unified Order System
+import OrderService from './services/orderService.js';
+import RealtimeServer from './services/realtimeServer.js';
+import createUnifiedRoutes from './routes/unifiedRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,6 +18,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const app = express();
+const httpServer = http.createServer(app);
 const PORT = process.env.PORT || 3001;
 
 // Middleware
@@ -53,6 +60,36 @@ if (hasSupabaseCredentials) {
     console.warn('⚠️  No credentials found in process.env');
 }
 
+// ============================================
+// UNIFIED ORDER SYSTEM INITIALIZATION
+// ============================================
+let orderService = null;
+let realtimeServer = null;
+
+if (supabase && !useMockData) {
+    // Initialize real-time WebSocket server
+    realtimeServer = new RealtimeServer(httpServer, {
+        corsOrigins: [
+            'http://localhost:3000',
+            'http://localhost:5173',
+            'http://localhost:5174',
+            process.env.USER_APP_URL,
+            process.env.RESTAURANT_APP_URL,
+            process.env.RIDER_APP_URL
+        ].filter(Boolean)
+    });
+
+    // Initialize Order Service with WebSocket support
+    orderService = new OrderService(supabase, realtimeServer.getIO());
+
+    // Mount unified order routes
+    app.use('/api/unified', createUnifiedRoutes(orderService, realtimeServer));
+    
+    console.log('✅ Unified Order System initialized with real-time support');
+} else {
+    console.log('⚠️  Unified Order System not initialized (Supabase not connected)');
+}
+
 // RESTAURANT ID LOGIC
 // Defaults to 2 (BE Bytes) if not specified in query param ?restaurantId=X
 const getRestaurantId = (req) => {
@@ -62,11 +99,62 @@ const getRestaurantId = (req) => {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
+    const wsStats = realtimeServer ? realtimeServer.getStats() : null;
     res.json({
         status: 'ok',
         message: 'MyEzz Restaurant API is running',
-        mode: useMockData ? 'MOCK - No Supabase required' : 'PRODUCTION - Connected to Supabase'
+        mode: useMockData ? 'MOCK - No Supabase required' : 'PRODUCTION - Connected to Supabase',
+        unifiedOrderSystem: orderService ? 'active' : 'inactive',
+        websocket: wsStats
     });
+});
+
+// Restaurant details endpoint
+app.get('/api/restaurant', async (req, res) => {
+    try {
+        const restaurantId = req.query.restaurantId || 1;
+        
+        if (!useMockData && supabase) {
+            const { data, error } = await supabase
+                .from('restaurants')
+                .select('*')
+                .eq('id', restaurantId)
+                .single();
+            
+            if (!error && data) {
+                return res.json({
+                    success: true,
+                    data: {
+                        id: data.id,
+                        name: data.name || 'MyEzz Restaurant',
+                        description: data.description,
+                        address: data.address,
+                        phone: data.phone,
+                        isOpen: data.is_open !== false
+                    }
+                });
+            }
+        }
+        
+        // Fallback mock response
+        res.json({
+            success: true,
+            data: {
+                id: parseInt(restaurantId),
+                name: 'MyEzz Restaurant',
+                description: 'Delicious food delivered to your doorstep',
+                address: 'Mumbai, India',
+                phone: '+91 9876543210',
+                isOpen: true
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching restaurant:', error);
+        res.json({
+            success: true,
+            data: { id: 1, name: 'MyEzz Restaurant', isOpen: true }
+        });
+    }
 });
 
 // --- MOCK DATA TRUTH STORE (For Reports Fallback) ---
@@ -755,8 +843,8 @@ app.get('/api/reports/insights', async (req, res) => {
 });
 
 
-// Start server
-app.listen(PORT, () => {
+// Start server with HTTP server (supports WebSocket)
+httpServer.listen(PORT, () => {
     console.log('\n' + '='.repeat(60));
     console.log('🚀 MyEzz Restaurant Backend Server');
     console.log('='.repeat(60));
@@ -764,6 +852,8 @@ app.listen(PORT, () => {
     console.log(`📊 Metrics endpoint: http://localhost:${PORT}/api/metrics/today`);
     console.log(`💚 Health check: http://localhost:${PORT}/health`);
     console.log(`📦 All orders: http://localhost:${PORT}/api/orders`);
+    console.log(`🔗 Unified Orders API: http://localhost:${PORT}/api/unified`);
+    console.log(`🔌 WebSocket: ws://localhost:${PORT}`);
     console.log('');
     console.log('=' .repeat(60) + '\n');
 });
