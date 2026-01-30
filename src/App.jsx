@@ -22,7 +22,27 @@ function RestaurantLayout() {
   // Basic validation: if restaurantId is not a valid number, redirect to default
   const numericId = parseInt(restaurantId, 10);
   if (isNaN(numericId) || numericId <= 0) {
-    return <Navigate to="/1/menu" replace />;
+    return <Navigate to="/login" replace />;
+  }
+
+  // Check if user is authenticated
+  const session = localStorage.getItem('myezz_session');
+  if (!session) {
+    // Not logged in - redirect to login
+    return <Navigate to="/login" replace />;
+  }
+
+  try {
+    const { restaurantId: sessionRestaurantId } = JSON.parse(session);
+    // Verify user is accessing their own restaurant
+    if (sessionRestaurantId !== numericId) {
+      // User trying to access different restaurant - redirect to their own
+      return <Navigate to={`/${sessionRestaurantId}/orders`} replace />;
+    }
+  } catch (e) {
+    // Invalid session - clear and redirect to login
+    localStorage.removeItem('myezz_session');
+    return <Navigate to="/login" replace />;
   }
 
   return (

@@ -144,8 +144,8 @@ export default function RestaurantLogin() {
         <div className="mobile-input-group">
           <User className="mobile-input-icon" size={22} />
           <input
-            type="email"
-            placeholder="Email"
+            type="text"
+            placeholder="Username"
             value={loginEmail}
             onChange={(e) => setLoginEmail(e.target.value)}
           />
@@ -377,8 +377,8 @@ export default function RestaurantLogin() {
           <form style={formBaseStyle} onSubmit={handleSignIn}>
             <h1 className="title">Welcome Back</h1>
             <input 
-              type="email" 
-              placeholder="Email" 
+              type="text" 
+              placeholder="Username" 
               value={loginEmail}
               onChange={(e) => setLoginEmail(e.target.value)}
             />

@@ -182,6 +182,8 @@ const Profile = () => {
   };
 
   const handleLogout = () => {
+    // Clear the session from localStorage
+    localStorage.removeItem('myezz_session');
     // Navigate to landing page with a state flag to show toast
     navigate('/', { state: { showLogoutToast: true } });
   };
