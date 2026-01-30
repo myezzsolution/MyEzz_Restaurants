@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Instagram, Phone, Mail, ExternalLink, User, Lock, Facebook, Twitter, Building2, MapPin } from "lucide-react";
+import { Instagram, Phone, Mail, ExternalLink, User, Lock, Facebook, Twitter, Building2, MapPin, Loader2 } from "lucide-react";
+import { API_BASE_URL } from "../config";
 import "./RestaurantLogin.css";
 
 export default function RestaurantLogin() {
@@ -13,6 +14,8 @@ export default function RestaurantLogin() {
   // Form states
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState("");
   const [signupData, setSignupData] = useState({
     restaurantName: "",
     ownerName: "",
@@ -32,6 +35,15 @@ export default function RestaurantLogin() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Check if already logged in
+  useEffect(() => {
+    const session = localStorage.getItem('myezz_session');
+    if (session) {
+      const { restaurantId } = JSON.parse(session);
+      navigate(`/${restaurantId}/orders`);
+    }
+  }, [navigate]);
 
   // Tech-first dot grid pattern with stronger orange presence
   const dotGridPattern = `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23FF6600' fill-opacity='0.12'/%3E%3C/svg%3E")`;
@@ -69,9 +81,42 @@ export default function RestaurantLogin() {
     height: "100%"
   };
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
-    navigate('/1/orders');
+    setLoginError("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: loginEmail,
+          password: loginPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Login failed');
+      }
+
+      // Save session to localStorage
+      localStorage.setItem('myezz_session', JSON.stringify({
+        restaurantId: data.data.restaurantId,
+        restaurantName: data.data.restaurantName,
+        username: data.data.username
+      }));
+
+      // Navigate to orders page
+      navigate(`/${data.data.restaurantId}/orders`);
+
+    } catch (error) {
+      setLoginError(error.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSignUp = (e) => {
@@ -99,8 +144,8 @@ export default function RestaurantLogin() {
         <div className="mobile-input-group">
           <User className="mobile-input-icon" size={22} />
           <input
-            type="email"
-            placeholder="Email"
+            type="text"
+            placeholder="Username"
             value={loginEmail}
             onChange={(e) => setLoginEmail(e.target.value)}
           />
@@ -116,8 +161,14 @@ export default function RestaurantLogin() {
           />
         </div>
 
-        <button className="mobile-cta-button" onClick={handleSignIn}>
-          Sign In
+        {loginError && (
+          <div style={{ color: '#ef4444', fontSize: '0.875rem', marginBottom: '1rem', textAlign: 'center' }}>
+            {loginError}
+          </div>
+        )}
+
+        <button className="mobile-cta-button" onClick={handleSignIn} disabled={isLoading}>
+          {isLoading ? <Loader2 size={20} className="spin-animation" /> : 'Sign In'}
         </button>
 
         <a href="#" className="mobile-forgot-link">Forgot Password?</a>
@@ -323,12 +374,29 @@ export default function RestaurantLogin() {
 
         {/* Login Form */}
         <div className="form-container sign-in">
-          <form style={formBaseStyle} onSubmit={(e) => e.preventDefault()}>
+          <form style={formBaseStyle} onSubmit={handleSignIn}>
             <h1 className="title">Welcome Back</h1>
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
+            <input 
+              type="text" 
+              placeholder="Username" 
+              value={loginEmail}
+              onChange={(e) => setLoginEmail(e.target.value)}
+            />
+            <input 
+              type="password" 
+              placeholder="Password" 
+              value={loginPassword}
+              onChange={(e) => setLoginPassword(e.target.value)}
+            />
+            {loginError && (
+              <div style={{ color: '#ef4444', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+                {loginError}
+              </div>
+            )}
             <a href="#" className="forgot">Forgot Your Password?</a>
-            <button type="submit" className="btn-main" onClick={() => navigate('/1/orders')}>Sign In</button>
+            <button type="submit" className="btn-main" disabled={isLoading}>
+              {isLoading ? <Loader2 size={18} className="spin-animation" /> : 'Sign In'}
+            </button>
           </form>
         </div>
 

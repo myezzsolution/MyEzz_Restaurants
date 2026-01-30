@@ -60,6 +60,78 @@ const getRestaurantId = (req) => {
     return id ? parseInt(id) : 2;
 };
 
+// ============================================
+// AUTHENTICATION API ENDPOINTS
+// ============================================
+import bcrypt from 'bcrypt';
+
+// Restaurant Login
+app.post('/api/auth/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Username and password are required' 
+            });
+        }
+
+        if (useMockData) {
+            return res.status(503).json({ 
+                success: false, 
+                error: 'Authentication requires Supabase connection' 
+            });
+        }
+
+        // Find user by username
+        const { data: authRecord, error } = await supabase
+            .from('restaurant_auth')
+            .select('id, restaurant_id, username, password_hash')
+            .eq('username', username.toLowerCase().trim())
+            .single();
+
+        if (error || !authRecord) {
+            return res.status(401).json({ 
+                success: false, 
+                error: 'Invalid username or password' 
+            });
+        }
+
+        // Compare password with hash
+        const isValidPassword = await bcrypt.compare(password, authRecord.password_hash);
+
+        if (!isValidPassword) {
+            return res.status(401).json({ 
+                success: false, 
+                error: 'Invalid username or password' 
+            });
+        }
+
+        // Fetch restaurant details
+        const { data: restaurant } = await supabase
+            .from('restaurants')
+            .select('id, name')
+            .eq('id', authRecord.restaurant_id)
+            .single();
+
+        console.log(`✅ Login successful: ${restaurant?.name || authRecord.restaurant_id}`);
+
+        res.json({
+            success: true,
+            data: {
+                restaurantId: authRecord.restaurant_id,
+                restaurantName: restaurant?.name || 'Restaurant',
+                username: authRecord.username
+            }
+        });
+
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ success: false, error: 'Login failed' });
+    }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.json({

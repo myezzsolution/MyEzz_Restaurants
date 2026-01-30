@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 kiro/
+
+# Sensitive credentials (NEVER COMMIT)
+restaurant_credentials.json
+backend/.env

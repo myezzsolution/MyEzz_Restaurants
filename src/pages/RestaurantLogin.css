@@ -158,6 +158,16 @@
     transform: none !important;
 }
 
+/* Spin animation for loading state */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spin-animation {
+    animation: spin 1s linear infinite;
+}
+
 /* Forgot Password Link */
 .form-container a.forgot {
     color: #888 !important;
@@ -594,6 +604,12 @@
     
     .mobile-cta-button:active {
         transform: scale(0.98);
+    }
+    
+    .mobile-cta-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
     }
     
     /* Forgot Password Link */
