@@ -1,0 +1,13 @@
+# robots.txt for MyEzz Restaurant Partner
+# https://my-ezz-restaurants.vercel.app
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /*/orders
+Disallow: /*/menu
+Disallow: /*/reports
+Disallow: /*/profile
+
+# Sitemap location
+Sitemap: https://my-ezz-restaurants.vercel.app/sitemap.xml
