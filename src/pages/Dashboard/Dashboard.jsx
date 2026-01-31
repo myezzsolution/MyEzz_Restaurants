@@ -7,10 +7,8 @@ import RingSpinner from '../../components/Spinner/Spinner';
 import WarningToast from '../../components/ui/WarningToast';
 import styles from './Dashboard.module.css';
 import { fetchActiveOrders, updateOrderStatus } from '../../services/centralOrderService';
-import { useParams } from 'react-router-dom';
 
 function Dashboard() {
-  const { restaurantId } = useParams();
   const [orders, setOrders] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [rejectionModalOpen, setRejectionModalOpen] = useState(false);
@@ -73,7 +71,7 @@ function Dashboard() {
         // Transform backend data to match frontend format
         const transformedOrders = data.map(order => ({
           id: order._id,
-          customerName: order.customer_id, // In real app, fetch customer name from Supabase
+          customerName: order.customer_id,
           items: order.items.map(item => ({
             name: item.name,
             quantity: item.qty
@@ -88,14 +86,13 @@ function Dashboard() {
         setOrders(transformedOrders);
       } catch (err) {
         console.error('Failed to fetch orders:', err);
-        // Only show error message on main load, simpler handling for background
         if (!isBackground) {
-            setError('Failed to load orders.');
-            setOrders([]);
+          setError('Failed to load orders.');
+          setOrders([]);
         }
       } finally {
         if (!isBackground) {
-            setLoading(false);
+          setLoading(false);
         }
       }
     };
@@ -106,7 +103,7 @@ function Dashboard() {
     // Poll for new orders every 5 seconds (background update)
     const interval = setInterval(() => loadOrders(true), 5000);
     return () => clearInterval(interval);
-  }, [restaurantId]);
+  }, []);
 
   // Map backend status to frontend status
   function mapBackendStatus(backendStatus) {
@@ -114,9 +111,7 @@ function Dashboard() {
       'pending': 'new',
       'preparing': 'preparing',
       'ready': 'ready',
-      // Rider-managed statuses - these shouldn't show in restaurant dashboard
-      // but if they do, map them appropriately
-      'accepted': 'new',  // Rider accepted, but Restaurant still treats as new/preparing
+      'accepted': 'new',  // Rider accepted, but Restaurant still needs to prepare
       'pickup_completed': 'ready',
       'delivery_started': 'ready',
       'out_for_delivery': 'ready',
@@ -183,9 +178,7 @@ function Dashboard() {
 
   const handleMarkReady = async (orderId) => {
     try {
-      // Update status to 'ready' in Central Backend
       await updateOrderStatus(orderId, 'ready');
-      
       setOrders(orders.map(order =>
         order.id === orderId
           ? { ...order, status: 'ready' }
@@ -198,12 +191,9 @@ function Dashboard() {
 
   const handleHandToRider = async (orderId) => {
     try {
-      // Restaurant confirms rider has the order
-      // NOTE: We do NOT change status here - the Rider app controls status transitions
-      // from 'ready' -> 'pickup_completed' -> 'delivery_started' -> 'delivered'
-      // This just removes the order from the Restaurant's active view
+      // Just remove from local view - Rider app handles pickup status
       setOrders(orders.filter(order => order.id !== orderId));
-      console.log(`Order ${orderId} handed to rider - removed from Restaurant view`);
+      console.log(`Order ${orderId} handed to rider`);
     } catch (err) {
       console.error('Failed to hand order to rider:', err);
     }
@@ -213,7 +203,6 @@ function Dashboard() {
   const preparingOrders = orders.filter(order => order.status === 'preparing');
   const readyOrders = orders.filter(order => order.status === 'ready');
 
-  // Card animation variants
   const cardVariants = {
     initial: { opacity: 0, y: 20, scale: 0.95 },
     animate: { opacity: 1, y: 0, scale: 1 },
@@ -279,7 +268,7 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Mobile Tab Bar - Hidden on desktop via CSS */}
+      {/* Mobile Tab Bar */}
       <div className={styles.mobileTabs}>
         <button
           className={`${styles.mobileTab} ${activeTab === 'new' ? styles.mobileTabActive : ''}`}
@@ -424,7 +413,6 @@ function Dashboard() {
         orderDetails={orderToReject}
       />
 
-      {/* Warning Toast for Validation Feedback */}
       {warningId > 0 && (
         <WarningToast 
             key={warningId}
