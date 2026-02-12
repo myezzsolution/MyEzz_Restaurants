@@ -1,8 +1,14 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import useKeyboard from '../../hooks/useKeyboard';
 import styles from './AddItemModal.module.css';
 
 function AddItemModal({ isOpen, onClose, onAdd, categories = [] }) {
+  useKeyboard({
+    onEscape: onClose
+    // Enter key is handled by the <form> submit automatically
+  }, [], isOpen);
+
   const [formData, setFormData] = useState({
     name: '',
     category: '',

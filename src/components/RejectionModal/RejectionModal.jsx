@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, AlertTriangle } from 'lucide-react';
+import useKeyboard from '../../hooks/useKeyboard';
 import styles from './RejectionModal.module.css';
 
 const RejectionModal = ({ isOpen, onClose, onConfirm, orderDetails }) => {
@@ -23,6 +24,17 @@ const RejectionModal = ({ isOpen, onClose, onConfirm, orderDetails }) => {
             setOtherReason('');
         }
     };
+
+    const isConfirmDisabled = !selectedReason || (selectedReason === 'Other' && !otherReason.trim());
+
+    useKeyboard({
+        onEscape: onClose,
+        onEnter: () => {
+            if (!isConfirmDisabled) {
+                handleConfirm();
+            }
+        }
+    }, [isConfirmDisabled, selectedReason, otherReason], isOpen);
 
     if (!isOpen) return null;
 
