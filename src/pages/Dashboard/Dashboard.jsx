@@ -1,150 +1,38 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react'; // removed unused useEffect
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRestaurant } from '../../context/RestaurantContext'; // Import context
 import OrderCard from '../../components/OrderCard/OrderCard';
 import PrepTimeModal from '../../components/PrepTimeModal/PrepTimeModal';
 import RejectionModal from '../../components/RejectionModal/RejectionModal';
 import RingSpinner from '../../components/Spinner/Spinner';
 import WarningToast from '../../components/ui/WarningToast';
 import styles from './Dashboard.module.css';
-import { fetchActiveOrders, updateOrderStatus } from '../../services/centralOrderService';
+import { updateOrderStatus } from '../../services/centralOrderService';
 
 function Dashboard() {
-  const [orders, setOrders] = useState([]);
+  // Use global orders from context
+  const { 
+    orders, 
+    setOrders, 
+    isLoading: loading, 
+    isSoundBlocked, 
+    enableSound 
+  } = useRestaurant();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [rejectionModalOpen, setRejectionModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orderToReject, setOrderToReject] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('new'); // For mobile tab view
+  const [error, setError] = useState(null); // Keep error state if needed, though context handles loading errors
+  const [activeTab, setActiveTab] = useState('new');
   const [warningId, setWarningId] = useState(0);
-
-  // Sound notification
-  const lastOrderCountRef = useRef(0);
-  const [isSoundBlocked, setIsSoundBlocked] = useState(false);
-
-  const playSound = async () => {
-    try {
-      const audio = new Audio('/ding.mp3');
-      await audio.play();
-      setIsSoundBlocked(false);
-    } catch (error) {
-      console.error('Error playing notification sound:', error);
-      if (error.name === 'NotAllowedError') {
-        setIsSoundBlocked(true);
-      }
-    }
-  };
-
-  useEffect(() => {
-    const currentNewOrders = orders.filter(o => o.status === 'new').length;
-    
-    // Play sound if we have more new orders than before
-    if (currentNewOrders > lastOrderCountRef.current) {
-      playSound();
-    }
-    
-    lastOrderCountRef.current = currentNewOrders;
-  }, [orders]);
-
-  const enableSound = () => {
-    playSound();
-  };
 
   const handleValidationFail = () => {
     setWarningId(Date.now());
   };
 
-  // Fetch orders from Central Backend
-  useEffect(() => {
-    // Get restaurant info from session
-    const session = JSON.parse(localStorage.getItem('myezz_session') || '{}');
-    const restaurantName = session.restaurantName; // Customer app sends restaurant name as restaurant_id
-    
-    const loadOrders = async (isBackground = false) => {
-      // Only show full loading spinner on first load, not background polls
-      if (!isBackground) {
-        setLoading(true);
-      }
-      setError(null);
+  // Removed local polling, sound logic, and backend mapping
 
-      try {
-        // Fetch all active orders (filtering will be done client-side)
-        const data = await fetchActiveOrders();
-        
-        // Filter orders for THIS restaurant only (by name since Customer app uses name)
-        let ordersForThisRestaurant = data;
-        if (restaurantName) {
-          ordersForThisRestaurant = data.filter(order => 
-            order.restaurant_id?.toLowerCase().includes(restaurantName.toLowerCase())
-          );
-        }
-        
-        // Filter out orders that are in rider-managed statuses
-        // Once handed to rider, restaurant doesn't need to see them anymore
-        const restaurantRelevantOrders = ordersForThisRestaurant.filter(order => {
-          const riderManagedStatuses = ['pickup_completed', 'delivery_started', 'out_for_delivery', 'delivered'];
-          return !riderManagedStatuses.includes(order.status);
-        });
-        
-        // Transform backend data to match frontend format
-        const transformedOrders = restaurantRelevantOrders.map(order => ({
-          id: order._id,
-          customerName: order.customer_id,
-          items: order.items.map(item => ({
-            name: item.name,
-            quantity: item.qty
-          })),
-          total: order.total_amount || order.items.reduce((sum, item) => sum + (item.price * item.qty), 0),
-          status: mapBackendStatus(order.status),
-          verificationCode: generateVerificationCode(),
-          prepTime: order.prepTime,
-          acceptedAt: order.acceptedAt ? new Date(order.acceptedAt) : null
-        }));
-        
-        setOrders(transformedOrders);
-      } catch (err) {
-        console.error('Failed to fetch orders:', err);
-        if (!isBackground) {
-          setError('Failed to load orders.');
-          setOrders([]);
-        }
-      } finally {
-        if (!isBackground) {
-          setLoading(false);
-        }
-      }
-    };
-
-    // Initial load
-    loadOrders(false);
-    
-    // Poll for new orders every 5 seconds (background update)
-    const interval = setInterval(() => loadOrders(true), 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Map backend status to frontend status (for Restaurant view only)
-  function mapBackendStatus(backendStatus) {
-    const statusMap = {
-      'pending': 'new',
-      'preparing': 'preparing',
-      'ready': 'ready',
-      'accepted': 'new',  // Rider accepted, but Restaurant still needs to prepare
-      'cancelled': 'rejected'
-      // Note: pickup_completed, delivery_started, delivered are filtered out before this function
-    };
-    return statusMap[backendStatus] || 'new';
-  }
-
-  function generateVerificationCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < 4; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  }
 
   const handleAcceptOrder = (orderId) => {
     const order = orders.find(o => o.id === orderId);

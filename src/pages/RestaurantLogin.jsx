@@ -1,15 +1,245 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Instagram, Phone, Mail, ExternalLink, User, Lock, Facebook, Twitter, Building2, MapPin, Loader2 } from "lucide-react";
+import { Instagram, Phone, Mail, ExternalLink, User, Lock, Facebook, Twitter, Building2, MapPin, Loader2, Eye, EyeOff } from "lucide-react";
+import useKeyboard from "../hooks/useKeyboard";
 import { API_BASE_URL } from "../config";
 import "./RestaurantLogin.css";
+
+// Mobile Login Layout Component
+const MobileLoginForm = ({ 
+  loginEmail, setLoginEmail, 
+  loginPassword, setLoginPassword, 
+  showPassword, setShowPassword, 
+  loginError, isLoading, 
+  handleSignIn, setIsActive 
+}) => (
+  <div className="mobile-login-fullscreen">
+    {/* Image Header with Welcome Text */}
+    <div className="mobile-card-header">
+      <h1 className="mobile-welcome-text">Welcome Back,<br />Partner!</h1>
+      {/* Curved Separator SVG */}
+      <div className="mobile-curve-separator">
+        <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+          <path d="M0,20 Q50,0 100,20 L100,20 L0,20 Z" fill="#FFFFFF" />
+        </svg>
+      </div>
+    </div>
+
+    {/* White Form Section */}
+    <form className="mobile-form-section" onSubmit={(e) => { e.preventDefault(); handleSignIn(); }}>
+      <div className="mobile-input-group">
+        <User className="mobile-input-icon" size={22} />
+        <input
+          type="text"
+          placeholder="Username"
+          value={loginEmail}
+          onChange={(e) => setLoginEmail(e.target.value)}
+        />
+      </div>
+
+      <div className="mobile-input-group">
+        <Lock className="mobile-input-icon" size={22} />
+        <input
+          type={showPassword ? "text" : "password"}
+          placeholder="Password"
+          value={loginPassword}
+          onChange={(e) => setLoginPassword(e.target.value)}
+        />
+        <button 
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          style={{ 
+            background: 'none', 
+            border: 'none', 
+            color: '#666', 
+            padding: '0 10px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+        </button>
+      </div>
+
+      {loginError && (
+        <div style={{ color: '#ef4444', fontSize: '0.875rem', marginBottom: '1rem', textAlign: 'center' }}>
+          {loginError}
+        </div>
+      )}
+
+      <button type="submit" className="mobile-cta-button" disabled={isLoading}>
+        {isLoading ? <Loader2 size={20} className="spin-animation" /> : 'Sign In'}
+      </button>
+
+      <a href="#" className="mobile-forgot-link">Forgot Password?</a>
+
+      <div className="mobile-toggle-text">
+        Don't have an account? <a onClick={() => setIsActive(true)}>Create Account</a>
+      </div>
+    </form>
+
+    {/* Footer */}
+    <div className="mobile-fullscreen-footer">
+      <div className="mobile-footer-row">
+        <a href="https://my-ezz.vercel.app/" target="_blank" rel="noopener noreferrer">MyEzz</a>
+        <a href="https://myezzofficial.netlify.app/about" target="_blank" rel="noopener noreferrer">About</a>
+        <a href="https://myezzofficial.netlify.app/contact" target="_blank" rel="noopener noreferrer">Contact</a>
+      </div>
+      <div className="mobile-footer-row">
+        <a href="https://www.instagram.com/mycravezz/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram size={20} /></a>
+        <a href="tel:+918097021356" aria-label="Phone"><Phone size={20} /></a>
+        <a href="mailto:myeasycheckout@gmail.com" aria-label="Email"><Mail size={20} /></a>
+      </div>
+      <span className="mobile-footer-copyright">© 2026 MyEzz Partner. All rights reserved.</span>
+    </div>
+  </div>
+);
+
+// Mobile Signup Layout Component
+const MobileSignupForm = ({
+  signupData, setSignupData,
+  handleSignUp, setIsActive
+}) => (
+  <motion.div
+    className="mobile-login-fullscreen"
+    initial={{ opacity: 0, y: 15 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.35 }}
+  >
+    {/* Back Button */}
+    <button
+      className="mobile-back-btn"
+      onClick={() => setIsActive(false)}
+    >
+      ← Back to Login
+    </button>
+    {/* Image Header */}
+    <div className="mobile-card-header mobile-signup-header">
+      <h1 className="mobile-welcome-text" style={{ fontSize: '1.5rem' }}>Create Your<br />Partner Account</h1>
+      <div className="mobile-curve-separator">
+        <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+          <path d="M0,20 Q50,0 100,20 L100,20 L0,20 Z" fill="#FFFFFF" />
+        </svg>
+      </div>
+    </div>
+
+    {/* White Form Section */}
+    <div
+      className="mobile-form-section"
+      style={{ maxHeight: '55vh', overflowY: 'auto' }}
+    >
+      <div className="mobile-input-group">
+        <Building2 className="mobile-input-icon" size={22} />
+        <input
+          type="text"
+          placeholder="Restaurant / Business Name"
+          value={signupData.restaurantName}
+          onChange={(e) => setSignupData({ ...signupData, restaurantName: e.target.value })}
+        />
+      </div>
+
+      <div className="mobile-input-group">
+        <User className="mobile-input-icon" size={22} />
+        <input
+          type="text"
+          placeholder="Owner / Partner Name"
+          value={signupData.ownerName}
+          onChange={(e) => setSignupData({ ...signupData, ownerName: e.target.value })}
+        />
+      </div>
+
+      <div className="mobile-input-group">
+        <Phone className="mobile-input-icon" size={22} />
+        <input
+          type="tel"
+          placeholder="Mobile Number"
+          value={signupData.mobile}
+          onChange={(e) => setSignupData({ ...signupData, mobile: e.target.value })}
+        />
+      </div>
+
+      <div className="mobile-input-group">
+        <Mail className="mobile-input-icon" size={22} />
+        <input
+          type="email"
+          placeholder="Email Address"
+          value={signupData.email}
+          onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
+        />
+      </div>
+
+      <div className="mobile-input-group">
+        <Lock className="mobile-input-icon" size={22} />
+        <input
+          type="password"
+          placeholder="Password"
+          value={signupData.password}
+          onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
+        />
+      </div>
+
+      <div className="mobile-input-group">
+        <MapPin className="mobile-input-icon" size={22} />
+        <input
+          type="text"
+          placeholder="City / Location"
+          value={signupData.city}
+          onChange={(e) => setSignupData({ ...signupData, city: e.target.value })}
+        />
+      </div>
+
+      <div className="mobile-input-group">
+        <Building2 className="mobile-input-icon" size={22} />
+        <select
+          style={{
+            flex: 1,
+            border: 'none',
+            background: 'transparent',
+            padding: 0,
+            fontSize: '1rem',
+            color: '#333',
+            outline: 'none'
+          }}
+          value={signupData.businessType}
+          onChange={(e) => setSignupData({ ...signupData, businessType: e.target.value })}
+        >
+          <option value="Restaurant">Restaurant</option>
+          <option value="Cafe">Cafe</option>
+          <option value="Cloud Kitchen">Cloud Kitchen</option>
+        </select>
+      </div>
+
+      <button className="mobile-cta-button" onClick={handleSignUp}>
+        Create Account
+      </button>
+
+      <div className="mobile-toggle-text">
+        Already have an account? <a onClick={() => setIsActive(false)}>Sign In</a>
+      </div>
+    </div>
+
+    {/* Footer */}
+    <div className="mobile-fullscreen-footer">
+      <span className="mobile-footer-copyright">© 2026 MyEzz Partner. All rights reserved.</span>
+    </div>
+  </motion.div>
+);
 
 export default function RestaurantLogin() {
   const navigate = useNavigate();
   const [isActive, setIsActive] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Keyboard navigation: Escape to go back to Sign In
+  useKeyboard({
+    onEscape: () => {
+      if (isActive) setIsActive(false);
+    }
+  }, [isActive], true);
 
   // Form states
   const [loginEmail, setLoginEmail] = useState("");
@@ -61,14 +291,15 @@ export default function RestaurantLogin() {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    minHeight: "100vh",
-    width: "100vw",
-    position: "fixed",
+    minHeight: isMobile ? "100dvh" : "100vh",
+    width: "100%",
+    position: isMobile ? "relative" : "fixed", // Changed from fixed to relative for mobile to handle keyboard
     top: 0,
     left: 0,
     zIndex: 9999,
     fontFamily: "'Inter', sans-serif",
-    padding: isMobile ? "1rem" : 0
+    padding: isMobile ? "1rem" : 0,
+    overflowY: isMobile ? "auto" : "hidden" // Allow scrolling on mobile
   };
 
   const formBaseStyle = {
@@ -154,203 +385,6 @@ export default function RestaurantLogin() {
     }
   };
 
-  // Mobile Login Layout
-  const MobileLoginForm = () => (
-    <div className="mobile-login-fullscreen">
-      {/* Image Header with Welcome Text */}
-      <div className="mobile-card-header">
-        <h1 className="mobile-welcome-text">Welcome Back,<br />Partner!</h1>
-        {/* Curved Separator SVG */}
-        <div className="mobile-curve-separator">
-          <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-            <path d="M0,20 Q50,0 100,20 L100,20 L0,20 Z" fill="#FFFFFF" />
-          </svg>
-        </div>
-      </div>
-
-      {/* White Form Section */}
-      <div className="mobile-form-section">
-        <div className="mobile-input-group">
-          <User className="mobile-input-icon" size={22} />
-          <input
-            type="text"
-            placeholder="Username"
-            value={loginEmail}
-            onChange={(e) => setLoginEmail(e.target.value)}
-          />
-        </div>
-
-        <div className="mobile-input-group">
-          <Lock className="mobile-input-icon" size={22} />
-          <input
-            type="password"
-            placeholder="Password"
-            value={loginPassword}
-            onChange={(e) => setLoginPassword(e.target.value)}
-          />
-        </div>
-
-        {loginError && (
-          <div style={{ color: '#ef4444', fontSize: '0.875rem', marginBottom: '1rem', textAlign: 'center' }}>
-            {loginError}
-          </div>
-        )}
-
-        <button className="mobile-cta-button" onClick={handleSignIn} disabled={isLoading}>
-          {isLoading ? <Loader2 size={20} className="spin-animation" /> : 'Sign In'}
-        </button>
-
-        <a href="#" className="mobile-forgot-link">Forgot Password?</a>
-
-        <div className="mobile-toggle-text">
-          Don't have an account? <a onClick={() => setIsActive(true)}>Create Account</a>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="mobile-fullscreen-footer">
-        <div className="mobile-footer-row">
-          <a href="https://my-ezz.vercel.app/" target="_blank" rel="noopener noreferrer">MyEzz</a>
-          <a href="https://myezzofficial.netlify.app/about" target="_blank" rel="noopener noreferrer">About</a>
-          <a href="https://myezzofficial.netlify.app/contact" target="_blank" rel="noopener noreferrer">Contact</a>
-        </div>
-        <div className="mobile-footer-row">
-          <a href="https://www.instagram.com/mycravezz/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram size={20} /></a>
-          <a href="tel:+918097021356" aria-label="Phone"><Phone size={20} /></a>
-          <a href="mailto:myeasycheckout@gmail.com" aria-label="Email"><Mail size={20} /></a>
-        </div>
-        <span className="mobile-footer-copyright">© 2026 MyEzz Partner. All rights reserved.</span>
-      </div>
-    </div>
-  );
-
-  // Mobile Signup Layout
-  const MobileSignupForm = () => (
-    <motion.div
-      className="mobile-login-fullscreen"
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-    >
-      {/* Back Button */}
-      <button
-        className="mobile-back-btn"
-        onClick={() => setIsActive(false)}
-      >
-        ← Back to Login
-      </button>
-      {/* Image Header */}
-      <div className="mobile-card-header mobile-signup-header">
-        <h1 className="mobile-welcome-text" style={{ fontSize: '1.5rem' }}>Create Your<br />Partner Account</h1>
-        <div className="mobile-curve-separator">
-          <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-            <path d="M0,20 Q50,0 100,20 L100,20 L0,20 Z" fill="#FFFFFF" />
-          </svg>
-        </div>
-      </div>
-
-      {/* White Form Section */}
-      <div
-        className="mobile-form-section"
-        style={{ maxHeight: '55vh', overflowY: 'auto' }}
-      >
-        <div className="mobile-input-group">
-          <Building2 className="mobile-input-icon" size={22} />
-          <input
-            type="text"
-            placeholder="Restaurant / Business Name"
-            value={signupData.restaurantName}
-            onChange={(e) => setSignupData({ ...signupData, restaurantName: e.target.value })}
-          />
-        </div>
-
-        <div className="mobile-input-group">
-          <User className="mobile-input-icon" size={22} />
-          <input
-            type="text"
-            placeholder="Owner / Partner Name"
-            value={signupData.ownerName}
-            onChange={(e) => setSignupData({ ...signupData, ownerName: e.target.value })}
-          />
-        </div>
-
-        <div className="mobile-input-group">
-          <Phone className="mobile-input-icon" size={22} />
-          <input
-            type="tel"
-            placeholder="Mobile Number"
-            value={signupData.mobile}
-            onChange={(e) => setSignupData({ ...signupData, mobile: e.target.value })}
-          />
-        </div>
-
-        <div className="mobile-input-group">
-          <Mail className="mobile-input-icon" size={22} />
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={signupData.email}
-            onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
-          />
-        </div>
-
-        <div className="mobile-input-group">
-          <Lock className="mobile-input-icon" size={22} />
-          <input
-            type="password"
-            placeholder="Password"
-            value={signupData.password}
-            onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
-          />
-        </div>
-
-        <div className="mobile-input-group">
-          <MapPin className="mobile-input-icon" size={22} />
-          <input
-            type="text"
-            placeholder="City / Location"
-            value={signupData.city}
-            onChange={(e) => setSignupData({ ...signupData, city: e.target.value })}
-          />
-        </div>
-
-        <div className="mobile-input-group">
-          <Building2 className="mobile-input-icon" size={22} />
-          <select
-            style={{
-              flex: 1,
-              border: 'none',
-              background: 'transparent',
-              padding: 0,
-              fontSize: '1rem',
-              color: '#333',
-              outline: 'none'
-            }}
-            value={signupData.businessType}
-            onChange={(e) => setSignupData({ ...signupData, businessType: e.target.value })}
-          >
-            <option value="Restaurant">Restaurant</option>
-            <option value="Cafe">Cafe</option>
-            <option value="Cloud Kitchen">Cloud Kitchen</option>
-          </select>
-        </div>
-
-        <button className="mobile-cta-button" onClick={handleSignUp}>
-          Create Account
-        </button>
-
-        <div className="mobile-toggle-text">
-          Already have an account? <a onClick={() => setIsActive(false)}>Sign In</a>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="mobile-fullscreen-footer">
-        <span className="mobile-footer-copyright">© 2026 MyEzz Partner. All rights reserved.</span>
-      </div>
-    </motion.div>
-  );
-
   // Mobile Layout
   if (isMobile) {
     return (
@@ -361,7 +395,27 @@ export default function RestaurantLogin() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           style={{ width: '100%', maxWidth: '400px' }}
         >
-          {!isActive ? <MobileLoginForm /> : <MobileSignupForm />}
+          {!isActive ? (
+            <MobileLoginForm 
+              loginEmail={loginEmail}
+              setLoginEmail={setLoginEmail}
+              loginPassword={loginPassword}
+              setLoginPassword={setLoginPassword}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              loginError={loginError}
+              isLoading={isLoading}
+              handleSignIn={handleSignIn}
+              setIsActive={setIsActive}
+            />
+          ) : (
+            <MobileSignupForm 
+              signupData={signupData}
+              setSignupData={setSignupData}
+              handleSignUp={handleSignUp}
+              setIsActive={setIsActive}
+            />
+          )}
         </motion.div>
       </div>
     );
@@ -449,12 +503,31 @@ export default function RestaurantLogin() {
               value={loginEmail}
               onChange={(e) => setLoginEmail(e.target.value)}
             />
-            <input 
-              type="password" 
-              placeholder="Password" 
-              value={loginPassword}
-              onChange={(e) => setLoginPassword(e.target.value)}
-            />
+            <div style={{ position: 'relative', width: '100%' }}>
+              <input 
+                type={showPassword ? "text" : "password"} 
+                placeholder="Password" 
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                style={{ width: '100%' }}
+              />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: '#666',
+                  cursor: 'pointer'
+                }}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
             {loginError && (
               <div style={{ color: '#ef4444', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
                 {loginError}

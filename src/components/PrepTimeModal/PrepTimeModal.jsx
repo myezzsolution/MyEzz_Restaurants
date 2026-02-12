@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, Clock } from 'lucide-react';
+import useKeyboard from '../../hooks/useKeyboard';
 import styles from './PrepTimeModal.module.css';
 
 const PrepTimeModal = ({ isOpen, onClose, onConfirm, orderDetails }) => {
@@ -16,6 +17,11 @@ const PrepTimeModal = ({ isOpen, onClose, onConfirm, orderDetails }) => {
     onClose();
     setSelectedTime(15); // Reset for next time
   };
+
+  useKeyboard({
+    onEscape: onClose,
+    onEnter: handleConfirm
+  }, [selectedTime], isOpen);
 
   if (!isOpen) return null;
 

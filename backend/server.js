@@ -34,11 +34,14 @@ if (hasSupabaseCredentials) {
     try {
         supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-        // Test connection (Checking 'restaurants' because we know it exists)
-        const { error } = await supabase.from('restaurants').select('id').limit(1);
-        if (error) {
-            console.warn('⚠️  Supabase connection failed, falling back to mock data');
-            console.error('DEBUG: Connection Error Details:', JSON.stringify(error, null, 2));
+        // Test connection (Checking 'restaurants' and 'orders')
+        const { error: resError } = await supabase.from('restaurants').select('id').limit(1);
+        const { error: ordError } = await supabase.from('orders').select('id').limit(1);
+        
+        if (resError || ordError) {
+            console.warn('⚠️  Supabase table check failed, falling back to mock data');
+            console.error('DEBUG: Restaurant Error:', resError);
+            console.error('DEBUG: Orders Error:', ordError);
             useMockData = true;
         } else {
             console.log('✅ Successfully connected to Supabase');
@@ -591,6 +594,78 @@ app.delete('/api/menu/:id', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// --- ORDERS API ENDPOINTS ---
+
+// Fetch all active orders
+app.get('/api/orders/active', async (req, res) => {
+    try {
+        if (useMockData) {
+            return res.json([]); // Return empty if mock or implement mock orders
+        }
+
+        // Fetch orders from Supabase
+        const { data: orders, error } = await supabase
+            .from('orders')
+            .select('*')
+            .in('status', ['new', 'preparing', 'ready'])
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        res.json(orders);
+    } catch (error) {
+        console.error('Error fetching active orders:', error);
+        res.status(500).json({ success: false, error: error.message || 'Failed to fetch active orders' });
+    }
+});
+
+// Update order status
+app.patch('/api/orders/:id/status', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        if (useMockData) {
+            return res.json({ success: true, id, status });
+        }
+
+        const { data, error } = await supabase
+            .from('orders')
+            .update({ status })
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        res.json(data);
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        res.status(500).json({ success: false, error: 'Failed to update order status' });
+    }
+});
+
+// Get single order by ID
+app.get('/api/orders/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (useMockData) return res.status(404).json({ error: 'Order not found' });
+
+        const { data, error } = await supabase
+            .from('orders')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) throw error;
+
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching order by ID:', error);
+        res.status(500).json({ success: false, error: 'Failed to fetch order' });
     }
 });
 

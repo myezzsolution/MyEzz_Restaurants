@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 // Central Backend URL - Single source of truth for all order operations
-const CENTRAL_BACKEND_URL = import.meta.env.VITE_CENTRAL_BACKEND_URL || 'http://localhost:5050';
+const CENTRAL_BACKEND_URL = API_BASE_URL;
 
 const centralOrderClient = axios.create({
     baseURL: CENTRAL_BACKEND_URL,

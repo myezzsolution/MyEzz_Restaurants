@@ -12,6 +12,7 @@ import Landing from './pages/Landing/Landing';
 import OrderHistory from './pages/OrderHistory/OrderHistory';
 import RestaurantSignup from './pages/RestaurantSignup';
 import RestaurantLogin from './pages/RestaurantLogin';
+import OrderNotificationToast from './components/Toast/OrderNotificationToast';
 
 import './App.css';
 
@@ -53,10 +54,15 @@ function RestaurantLayout() {
 }
 
 function RestaurantLayoutContent() {
-  const { isProfileOpen } = useRestaurant();
+  const { isProfileOpen, notification, dismissNotification, restaurantId } = useRestaurant();
 
   return (
     <>
+      <OrderNotificationToast 
+        order={notification} 
+        onClose={dismissNotification} 
+        restaurantId={restaurantId} 
+      />
       <div className="app">
         <Header />
         <Navbar />

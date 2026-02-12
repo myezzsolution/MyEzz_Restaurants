@@ -27,6 +27,7 @@ import {
   Camera
 } from 'lucide-react';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import useKeyboard from '../../hooks/useKeyboard';
 import ToastSave from '../../components/ui/ToastSave';
 import SuccessToast from '../../components/ui/SuccessToast';
 import styles from './Profile.module.css';
@@ -40,7 +41,7 @@ const Profile = () => {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const fileInputRef = useRef(null);
-  
+
   // Notification toggles
   const [notifications, setNotifications] = useState({
     orderSound: true,
@@ -84,6 +85,18 @@ const Profile = () => {
     gstin: displayData.gstin
   });
 
+  // Keyboard navigation
+  useKeyboard({
+    onEscape: () => {
+      // Logic from handleCloseProfile
+      if (isEditing && hasChanges()) {
+        setToastState('initial');
+      } else {
+        toggleProfile(false);
+      }
+    }
+  }, [isEditing, editableData, originalEditableData, toastState], true);
+
   // Sync state when data loads
   useEffect(() => {
     if (restaurantData) {
@@ -122,7 +135,7 @@ const Profile = () => {
   };
 
   const handleContactSupport = () => {
-    window.open('https://wa.me/919876543210?text=Hi%20MyEzz%20Support', '_blank');
+    window.open('https://wa.me/918097021356?text=Hi%20MyEzz%20Support', '_blank');
   };
 
   const handleEditClick = () => {
