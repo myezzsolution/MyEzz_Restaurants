@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
-import { Clock, CheckCircle, User, Check } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Clock, CheckCircle, User, Check, Eye, EyeOff, MoreVertical } from 'lucide-react';
 import styles from './OrderCard.module.css';
 
 const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider, onValidationFail }) => {
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [checkedItems, setCheckedItems] = useState(new Set());
+  const [codeRevealed, setCodeRevealed] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     if (order.status === 'preparing' && order.prepTime && order.acceptedAt) {
@@ -21,25 +24,20 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider, onVa
       }, 1000);
 
       return () => clearInterval(timer);
-    } else if (order.status === 'new') {
-      // For new orders, show elapsed time since order was placed
-      const timer = setInterval(() => {
-        const now = new Date().getTime();
-        // Simulate order creation time (5 minutes ago for demo)
-        const orderTime = now - (5 * 60 * 1000);
-        const elapsed = now - orderTime;
-        setElapsedTime(elapsed);
-      }, 1000);
-
-      return () => clearInterval(timer);
     }
   }, [order.status, order.prepTime, order.acceptedAt]);
 
-  const formatElapsedTime = (milliseconds) => {
-    const minutes = Math.floor(milliseconds / 60000);
-    if (minutes < 1) return 'Just now';
-    return `${minutes}m ago`;
-  };
+  // Close menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleClick = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [menuOpen]);
 
   const formatTime = (milliseconds) => {
     const minutes = Math.floor(milliseconds / 60000);
@@ -60,7 +58,6 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider, onVa
     }
   };
 
-  // Check if order is delayed (over 15 minutes in preparing)
   const isDelayed = order.status === 'preparing' && elapsedTime > 15 * 60 * 1000;
 
   const toggleItemCheck = (index) => {
@@ -86,24 +83,47 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider, onVa
       <div className={styles.cardHeader}>
         <h3 className={styles.orderId}>#{order.id}</h3>
         
-        {/* Timer in Top-Right Corner */}
-        {(order.status === 'new' || order.status === 'preparing') && (
+        {/* Timer — only for preparing orders */}
+        {order.status === 'preparing' && timeRemaining !== null && (
           <div className={`${styles.timer} ${isDelayed ? styles.timerDelayed : ''}`}>
             <Clock size={16} />
-            <span>
-              {order.status === 'preparing' && timeRemaining !== null 
-                ? formatTime(timeRemaining)
-                : formatElapsedTime(elapsedTime)
-              }
-            </span>
+            <span>{formatTime(timeRemaining)}</span>
           </div>
         )}
-        
-        <span className={styles.statusBadge}>
-          {order.status === 'new' && 'New Order'}
-          {order.status === 'preparing' && 'Preparing'}
-          {order.status === 'ready' && 'Ready'}
-        </span>
+
+        <div className={styles.headerRight}>
+          <span className={styles.statusBadge}>
+            {order.status === 'new' && 'New Order'}
+            {order.status === 'preparing' && 'Preparing'}
+            {order.status === 'ready' && 'Ready'}
+          </span>
+
+          {/* Three-dot menu */}
+          {order.status === 'new' && onReject && (
+            <div className={styles.moreMenu} ref={menuRef}>
+              <button
+                className={styles.moreMenuBtn}
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="More options"
+              >
+                <MoreVertical size={18} />
+              </button>
+              {menuOpen && (
+                <div className={styles.menuDropdown}>
+                  <button
+                    className={styles.menuItem}
+                    onClick={() => {
+                      setMenuOpen(false);
+                      onReject(order.id);
+                    }}
+                  >
+                    Reject Order
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Muted Customer Name */}
@@ -112,7 +132,7 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider, onVa
         <span className={styles.customerName}>{order.customerName}</span>
       </div>
 
-      {/* Enhanced Order Items with Checkboxes */}
+      {/* Order Items with Checkboxes */}
       <div className={styles.orderItems}>
         {order.items.map((item, index) => (
           <div 
@@ -143,26 +163,29 @@ const OrderCard = ({ order, onAccept, onReject, onMarkReady, onHandToRider, onVa
       {order.status === 'ready' && (
         <div className={styles.verificationCode}>
           <div className={styles.codeLabel}>Verification Code</div>
-          <div className={styles.code}>{order.verificationCode}</div>
+          <div className={styles.codeRow}>
+            <div className={styles.code}>
+              {codeRevealed ? order.verificationCode : '••••'}
+            </div>
+            <button
+              className={styles.codeToggle}
+              onClick={() => setCodeRevealed(!codeRevealed)}
+              aria-label={codeRevealed ? 'Hide code' : 'Reveal code'}
+            >
+              {codeRevealed ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
       )}
 
       <div className={styles.cardActions}>
         {order.status === 'new' && (
-          <>
-            <button 
-              className={styles.acceptBtn}
-              onClick={() => onAccept(order.id)}
-            >
-              Accept
-            </button>
-            <button 
-              className={styles.rejectBtn}
-              onClick={() => onReject(order.id)}
-            >
-              Reject
-            </button>
-          </>
+          <button 
+            className={styles.acceptBtn}
+            onClick={() => onAccept(order.id)}
+          >
+            Accept
+          </button>
         )}
 
         {order.status === 'preparing' && (

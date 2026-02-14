@@ -3,6 +3,17 @@ import { getRestaurantDetails } from '../services/menuService';
 
 const RestaurantContext = createContext();
 
+// Deterministic 4-digit code from order ID — same ID always yields same code
+const generateVerificationCode = (orderId) => {
+  const str = String(orderId);
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return String(Math.abs(hash) % 10000).padStart(4, '0');
+};
+
 export const useRestaurant = () => {
   const context = useContext(RestaurantContext);
   if (!context) {
@@ -99,7 +110,7 @@ export const RestaurantProvider = ({ children, restaurantId }) => {
             })),
             total: order.total_amount || order.items.reduce((sum, item) => sum + (item.price * item.qty), 0),
             status: mapBackendStatus(order.status),
-            verificationCode: '####', // Simplified, or generate if needed
+            verificationCode: generateVerificationCode(order._id),
             prepTime: order.prepTime,
             acceptedAt: order.acceptedAt ? new Date(order.acceptedAt) : null,
             originalStatus: order.status
