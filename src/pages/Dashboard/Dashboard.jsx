@@ -206,7 +206,7 @@ function Dashboard() {
             </h2>
           </div>
           <div className={styles.columnContent}>
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode="sync">
               {newOrders.map(order => (
                 <motion.div
                   key={order.id}
@@ -241,7 +241,7 @@ function Dashboard() {
             </h2>
           </div>
           <div className={styles.columnContent}>
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode="sync">
               {preparingOrders.map(order => (
                 <motion.div
                   key={order.id}
@@ -276,7 +276,7 @@ function Dashboard() {
             </h2>
           </div>
           <div className={styles.columnContent}>
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode="sync">
               {readyOrders.map(order => (
                 <motion.div
                   key={order.id}
