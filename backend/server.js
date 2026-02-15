@@ -18,6 +18,32 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// ============================================
+// CENTRAL BACKEND CONFIGURATION (MongoDB Orders)
+// ============================================
+const CENTRAL_BACKEND_URL = process.env.CENTRAL_BACKEND_URL || 'http://localhost:4000';
+
+// ============================================
+// ROOT ROUTE — Health Check
+// ============================================
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'MyEzz Restaurant Backend API',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      auth: ['/api/auth/login', '/api/auth/signup'],
+      menu: ['/api/menu', '/api/categories'],
+      restaurant: ['/api/restaurant'],
+      orders: ['/api/orders/active', '/api/orders', '/api/orders/:id', '/api/orders/:id/status'],
+      reports: ['/api/reports/sales', '/api/reports/orders', '/api/reports/menu', '/api/reports/heatmap', '/api/reports/customers'],
+      metrics: ['/api/metrics/today'],
+      health: ['/health']
+    }
+  });
+});
+
 // Check if Supabase credentials are available
 const hasSupabaseCredentials = process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY;
 let supabase = null;
@@ -34,14 +60,13 @@ if (hasSupabaseCredentials) {
     try {
         supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-        // Test connection (Checking 'restaurants' and 'orders')
+        // Test connection — only check restaurants table.
+        // Orders live in MongoDB (Central Backend), not Supabase.
         const { error: resError } = await supabase.from('restaurants').select('id').limit(1);
-        const { error: ordError } = await supabase.from('orders').select('id').limit(1);
         
-        if (resError || ordError) {
-            console.warn('⚠️  Supabase table check failed, falling back to mock data');
+        if (resError) {
+            console.warn('⚠️  Supabase connection check failed, falling back to mock data');
             console.error('DEBUG: Restaurant Error:', resError);
-            console.error('DEBUG: Orders Error:', ordError);
             useMockData = true;
         } else {
             console.log('✅ Successfully connected to Supabase');
@@ -299,18 +324,11 @@ const getDateRange = (range) => {
     return { start: start.toISOString(), end: end.toISOString() };
 };
 
-// Helper: Check if we should use mock for reports (even in Real Mode)
-// This handles the case where user has connected Supabase (Restaurants exist)
-// but hasn't created the 'orders' table yet.
+// Helper: Check if we should use mock for reports.
+// Orders live in MongoDB (Central Backend), not Supabase,
+// so Supabase-based report queries always use mock data.
 const checkReportMockStatus = async () => {
-    if (useMockData) return true;
-    const { error } = await supabase.from('orders').select('id').limit(1);
-    // Fallback to mock if there ANY error checking the orders table (missing, permission, etc.)
-    if (error) {
-        console.log(`DEBUG: Orders table check failed (Code: ${error.code}), falling back to mock reports.`);
-        return true;
-    }
-    return false;
+    return true;
 };
 
 app.get('/api/metrics/today', async (req, res) => {
@@ -597,75 +615,131 @@ app.delete('/api/menu/:id', async (req, res) => {
     }
 });
 
-// --- ORDERS API ENDPOINTS ---
+// ============================================
+// ORDER MANAGEMENT — PROXY TO CENTRAL BACKEND
+// ============================================
 
-// Fetch all active orders
+/**
+ * Forward a request to the Central Backend (MongoDB).
+ * Returns { data, status } or throws on network failure.
+ */
+async function proxyCentralBackend(endpoint, method = 'GET', body = null, queryParams = {}) {
+    const url = new URL(endpoint, CENTRAL_BACKEND_URL);
+    Object.keys(queryParams).forEach(key => {
+        if (queryParams[key] !== undefined && queryParams[key] !== null) {
+            url.searchParams.append(key, queryParams[key]);
+        }
+    });
+
+    const options = {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Source': 'MyEzz-Restaurant-Backend'
+        }
+    };
+
+    if (body && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
+        options.body = JSON.stringify(body);
+    }
+
+    console.log(`📡 Proxy ${method} ${url.toString()}`);
+
+    const response = await fetch(url.toString(), options);
+    const data = await response.json();
+
+    if (!response.ok) {
+        console.error(`❌ Central Backend ${response.status}:`, data);
+    }
+
+    return { data, status: response.status };
+}
+
+// GET /api/orders/active — used by RestaurantContext polling
 app.get('/api/orders/active', async (req, res) => {
     try {
-        if (useMockData) {
-            return res.json([]); // Return empty if mock or implement mock orders
-        }
-
-        // Fetch orders from Supabase
-        const { data: orders, error } = await supabase
-            .from('orders')
-            .select('*')
-            .in('status', ['new', 'preparing', 'ready'])
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-
-        res.json(orders);
+        const restaurantId = getRestaurantId(req);
+        const { data, status } = await proxyCentralBackend(
+            '/api/orders/active', 'GET', null,
+            { restaurant_id: restaurantId }
+        );
+        res.status(status).json(data);
     } catch (error) {
-        console.error('Error fetching active orders:', error);
-        res.status(500).json({ success: false, error: error.message || 'Failed to fetch active orders' });
+        console.error('❌ /api/orders/active:', error.message);
+        res.status(500).json({ success: false, error: 'Order service unavailable' });
     }
 });
 
-// Update order status
+// GET /api/orders — order history with optional filters
+app.get('/api/orders', async (req, res) => {
+    try {
+        const restaurantId = getRestaurantId(req);
+        const { status: filterStatus, date, limit } = req.query;
+        const { data, status } = await proxyCentralBackend(
+            '/api/orders', 'GET', null,
+            {
+                restaurant_id: restaurantId,
+                ...(filterStatus && { status: filterStatus }),
+                ...(date && { date }),
+                ...(limit && { limit })
+            }
+        );
+        res.status(status).json(data);
+    } catch (error) {
+        console.error('❌ /api/orders:', error.message);
+        res.status(500).json({ success: false, error: 'Order service unavailable' });
+    }
+});
+
+// PATCH /api/orders/:id/status — frontend uses PATCH via centralOrderService
 app.patch('/api/orders/:id/status', async (req, res) => {
     try {
         const { id } = req.params;
-        const { status } = req.body;
+        const { status: newStatus } = req.body;
+        const restaurantId = getRestaurantId(req);
 
-        if (useMockData) {
-            return res.json({ success: true, id, status });
-        }
-
-        const { data, error } = await supabase
-            .from('orders')
-            .update({ status })
-            .eq('id', id)
-            .select()
-            .single();
-
-        if (error) throw error;
-
-        res.json(data);
+        const { data, status } = await proxyCentralBackend(
+            `/api/orders/${id}/status`, 'PATCH',
+            { status: newStatus, restaurant_id: restaurantId }
+        );
+        res.status(status).json(data);
     } catch (error) {
-        console.error('Error updating order status:', error);
-        res.status(500).json({ success: false, error: 'Failed to update order status' });
+        console.error('❌ PATCH /api/orders/:id/status:', error.message);
+        res.status(500).json({ success: false, error: 'Order service unavailable' });
     }
 });
 
-// Get single order by ID
+// PUT /api/orders/:id/status — alternate verb accepted
+app.put('/api/orders/:id/status', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status: newStatus } = req.body;
+        const restaurantId = getRestaurantId(req);
+
+        const { data, status } = await proxyCentralBackend(
+            `/api/orders/${id}/status`, 'PUT',
+            { status: newStatus, restaurant_id: restaurantId }
+        );
+        res.status(status).json(data);
+    } catch (error) {
+        console.error('❌ PUT /api/orders/:id/status:', error.message);
+        res.status(500).json({ success: false, error: 'Order service unavailable' });
+    }
+});
+
+// GET /api/orders/:id — single order detail
 app.get('/api/orders/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        if (useMockData) return res.status(404).json({ error: 'Order not found' });
-
-        const { data, error } = await supabase
-            .from('orders')
-            .select('*')
-            .eq('id', id)
-            .single();
-
-        if (error) throw error;
-
-        res.json(data);
+        const restaurantId = getRestaurantId(req);
+        const { data, status } = await proxyCentralBackend(
+            `/api/orders/${id}`, 'GET', null,
+            { restaurant_id: restaurantId }
+        );
+        res.status(status).json(data);
     } catch (error) {
-        console.error('Error fetching order by ID:', error);
-        res.status(500).json({ success: false, error: 'Failed to fetch order' });
+        console.error('❌ /api/orders/:id:', error.message);
+        res.status(500).json({ success: false, error: 'Order service unavailable' });
     }
 });
 
@@ -997,9 +1071,9 @@ app.listen(PORT, () => {
     console.log('🚀 MyEzz Restaurant Backend Server');
     console.log('='.repeat(60));
     console.log(`✅ Server running on http://localhost:${PORT}`);
-    console.log(`📊 Metrics endpoint: http://localhost:${PORT}/api/metrics/today`);
-    console.log(`💚 Health check: http://localhost:${PORT}/health`);
-    console.log(`📦 All orders: http://localhost:${PORT}/api/orders`);
-    console.log('');
+    console.log(`🔗 Central Backend: ${CENTRAL_BACKEND_URL}`);
+    console.log(`📊 Metrics: http://localhost:${PORT}/api/metrics/today`);
+    console.log(`💚 Health:  http://localhost:${PORT}/health`);
+    console.log(`📦 Orders:  http://localhost:${PORT}/api/orders/active`);
     console.log('=' .repeat(60) + '\n');
 });
