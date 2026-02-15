@@ -60,14 +60,13 @@ if (hasSupabaseCredentials) {
     try {
         supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-        // Test connection (Checking 'restaurants' and 'orders')
+        // Test connection — only check restaurants table.
+        // Orders live in MongoDB (Central Backend), not Supabase.
         const { error: resError } = await supabase.from('restaurants').select('id').limit(1);
-        const { error: ordError } = await supabase.from('orders').select('id').limit(1);
         
-        if (resError || ordError) {
-            console.warn('⚠️  Supabase table check failed, falling back to mock data');
+        if (resError) {
+            console.warn('⚠️  Supabase connection check failed, falling back to mock data');
             console.error('DEBUG: Restaurant Error:', resError);
-            console.error('DEBUG: Orders Error:', ordError);
             useMockData = true;
         } else {
             console.log('✅ Successfully connected to Supabase');
@@ -325,18 +324,11 @@ const getDateRange = (range) => {
     return { start: start.toISOString(), end: end.toISOString() };
 };
 
-// Helper: Check if we should use mock for reports (even in Real Mode)
-// This handles the case where user has connected Supabase (Restaurants exist)
-// but hasn't created the 'orders' table yet.
+// Helper: Check if we should use mock for reports.
+// Orders live in MongoDB (Central Backend), not Supabase,
+// so Supabase-based report queries always use mock data.
 const checkReportMockStatus = async () => {
-    if (useMockData) return true;
-    const { error } = await supabase.from('orders').select('id').limit(1);
-    // Fallback to mock if there ANY error checking the orders table (missing, permission, etc.)
-    if (error) {
-        console.log(`DEBUG: Orders table check failed (Code: ${error.code}), falling back to mock reports.`);
-        return true;
-    }
-    return false;
+    return true;
 };
 
 app.get('/api/metrics/today', async (req, res) => {
