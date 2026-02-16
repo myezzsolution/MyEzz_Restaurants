@@ -7,7 +7,7 @@ function Footer() {
       <div className={styles.content}>
         <div className={styles.left}>
           <img 
-            src="/myezzlogopage0001removebgpreview1338-07fh-400h.png" 
+            src="/Myezz_logo.svg" 
             alt="MyEzz" 
             className={styles.logo}
           />

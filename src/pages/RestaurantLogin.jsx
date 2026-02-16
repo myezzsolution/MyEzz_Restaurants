@@ -561,7 +561,7 @@ export default function RestaurantLogin() {
       <footer className="login-footer">
         <div className="footer-brand">
           <img
-            src="/myezzlogopage0001removebgpreview1338-07fh-400h.png"
+            src="/Myezz_logo.svg"
             alt="MyEzz"
             className="footer-logo"
           />

@@ -12,6 +12,7 @@ import Landing from './pages/Landing/Landing';
 import OrderHistory from './pages/OrderHistory/OrderHistory';
 import RestaurantSignup from './pages/RestaurantSignup';
 import RestaurantLogin from './pages/RestaurantLogin';
+import Register from './pages/Register/Register';
 import OrderNotificationToast from './components/Toast/OrderNotificationToast';
 
 import './App.css';
@@ -93,6 +94,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/signup" element={<RestaurantSignup />} />
         <Route path="/login" element={<RestaurantLogin />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Restaurant Specific Routes */}
         {/* The RestaurantLayout maps to /:restaurantId/* so it handles sub-routes */}
