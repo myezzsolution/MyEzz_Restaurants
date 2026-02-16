@@ -53,7 +53,7 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleRegisterClick = () => {
-    navigate('/signup');
+    navigate('/onboarding');
   };
 
   return (
