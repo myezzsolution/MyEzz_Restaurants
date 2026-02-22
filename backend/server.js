@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
+import multer from 'multer';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -17,6 +18,46 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// ============================================
+// SERVICE-ROLE SUPABASE CLIENT (bypasses RLS)
+// Used only for server-side storage uploads
+// ============================================
+const supabaseAdmin = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+// Multer — store uploaded files in memory (no disk writes)
+const upload = multer({ storage: multer.memoryStorage() });
+
+// POST /api/upload-doc
+// Accepts: multipart/form-data { file, restaurantName, docKey }
+// Returns: { path } — the storage path of the uploaded file
+app.post('/api/upload-doc', upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: 'No file provided' });
+
+        const { restaurantName = 'unknown', docKey = 'doc' } = req.body;
+        const ext = req.file.originalname.split('.').pop();
+        const folder = restaurantName.trim().replace(/[^a-zA-Z0-9]/g, '_');
+        const storagePath = `${folder}_${Date.now()}_${docKey}.${ext}`;
+
+        const { error } = await supabaseAdmin.storage
+            .from('restaurant-docs')
+            .upload(storagePath, req.file.buffer, {
+                contentType: req.file.mimetype,
+                upsert: false
+            });
+
+        if (error) throw new Error(error.message);
+
+        res.json({ path: storagePath });
+    } catch (err) {
+        console.error('Upload error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 // ============================================
 // CENTRAL BACKEND CONFIGURATION (MongoDB Orders)

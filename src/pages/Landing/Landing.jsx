@@ -121,7 +121,7 @@ function Landing() {
         <div className={styles.navContent}>
           <div className={styles.logo} onClick={() => navigate('/landing')}>
             <img
-              src="/myezzlogopage0001removebgpreview1338-07fh-400h.png"
+              src="/Myezz_logo.svg"
               alt="MyEzz Partner"
               className={styles.logoImage}
             />
@@ -231,7 +231,7 @@ function Landing() {
           <div className={styles.footerTop}>
             <div className={styles.footerBrand}>
               <img
-                src="/myezzlogopage0001removebgpreview1338-07fh-400h.png"
+                src="/Myezz_logo.svg"
                 alt="MyEzz Partner"
                 className={styles.footerLogo}
               />
