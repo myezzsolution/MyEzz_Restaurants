@@ -475,68 +475,123 @@ html, body { background: #FFF8F1; min-height: 100%; }
 }
 
 /* ── Mobile ───────────────────────────────────────────────────── */
-.mob-wrap {
-  width: min(380px, 92vw);
-  background: #fff;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+
+/* Full-viewport flex column — image top, white sheet bottom */
+.mob-screen {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  z-index: 1;
+  z-index: 1;           /* above canvas (z-index:0) */
 }
 
-.mob-header {
-  background: linear-gradient(135deg, #FF6600, #FF8C00);
-  padding: 36px 28px 52px;
+/* ── Top: photo ──────────────────────────────────────────────── */
+.mob-image-wrap {
+  width: 100%;
+  height: 26vh;
+  min-height: 160px;
+  flex-shrink: 0;
+  overflow: hidden;
+  /* Gradient mask: image fades seamlessly into white sheet */
+  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  transition: height 0.35s ease, min-height 0.35s ease;
+}
+
+.mob-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;  /* keep face visible */
+  display: block;
+}
+
+/* ── Sheet: scrollable so Sign In is always reachable ───────────── */
+.mob-sheet {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 24px 24px 0 0;
+  margin-top: -24px;
+  padding: 20px 24px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
+  z-index: 2;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.06);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Keyboard open: collapse image so form gets full room ────────── */
+.mob-focused .mob-image-wrap {
+  height: 0;
+  min-height: 0;
 }
 
 .mob-logo {
-  height: 26px;
-  margin-bottom: 16px;
-  filter: brightness(0) invert(1);
+  height: 28px;
+  margin-bottom: 12px;
 }
 
 .mob-title {
-  font-size: 1.6rem;
+  font-size: 1.65rem;
   font-weight: 800;
-  color: #fff;
+  color: #111827;
+  text-align: center;
   line-height: 1.2;
+  margin-bottom: 6px;
 }
 
+.mob-subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* ── Form ────────────────────────────────────────────────────── */
 .mob-form {
-  padding: 28px 28px 32px;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 13px;
-  margin-top: -20px;
-  background: #fff;
-  border-radius: 20px 20px 0 0;
+  gap: 12px;
 }
 
-.mob-form input {
+.mob-form input[type="text"],
+.mob-form input[type="password"] {
   width: 100%;
-  padding: 12px 15px;
+  padding: 13px 16px;
   border: 1.5px solid #e5e7eb;
-  border-radius: 10px;
-  font-size: 0.9rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-family: 'Inter', sans-serif;
   outline: none;
-  transition: border-color 0.2s;
   background: #fafafa;
+  color: #111827;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  /* Ensure inputs are interactive above canvas */
+  position: relative;
+  z-index: 3;
 }
 
-.mob-form input:focus {
+.mob-form input[type="text"]:focus,
+.mob-form input[type="password"]:focus {
   border-color: #FF6600;
-  box-shadow: 0 0 0 3px rgba(255,102,0,0.1);
+  box-shadow: 0 0 0 3px rgba(255,102,0,0.12);
+  background: #fff;
 }
 
+/* Password field wrapper */
 .mob-pw-wrap {
   position: relative;
+  z-index: 3;
 }
 
-.mob-pw-wrap input { padding-right: 42px; }
+.mob-pw-wrap input { padding-right: 46px; }
 
+/* Eye toggle button */
 .mob-eye {
   position: absolute;
   right: 13px;
@@ -549,17 +604,63 @@ html, body { background: #FFF8F1; min-height: 100%; }
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
-  color: #9ca3af;
+  color: #475569;
   display: flex;
   align-items: center;
-  padding: 4px !important;
+  padding: 6px !important;
   min-height: 0 !important;
   min-width: 0 !important;
-  border-radius: 6px;
+  z-index: 4;
+  touch-action: manipulation;
 }
 
 .mob-eye:focus { outline: none !important; box-shadow: none !important; }
 
+/* Remember me checkbox */
+.mob-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #374151;
+  user-select: none;
+}
+
+.mob-remember input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.mob-remember input[type="checkbox"]:checked {
+  background: #FF6600;
+  border-color: #FF6600;
+}
+
+.mob-remember input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1.5px;
+  width: 5px;
+  height: 9px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+/* Error */
 .mob-error {
   font-size: 0.82rem;
   color: #dc2626;
@@ -567,46 +668,41 @@ html, body { background: #FFF8F1; min-height: 100%; }
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid #fecaca;
+  width: 100%;
+  text-align: center;
 }
 
+/* Sign In button */
 .mob-signin-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 13px;
+  padding: 14px;
   background: linear-gradient(135deg, #FF6600, #FF8C00);
   color: #fff;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255,102,0,0.3);
+  box-shadow: 0 4px 14px rgba(255,102,0,0.35);
   margin-top: 4px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mob-signin-btn:disabled { opacity: 0.6; }
+.mob-signin-btn:active { transform: scale(0.98); }
 
-.mob-forgot {
-  font-size: 0.83rem;
-  color: #6b7280;
-  text-align: center;
-  text-decoration: none;
-  text-underline-offset: 2px;
-}
-
-.mob-forgot:hover {
-  text-decoration: underline;
-  color: #6b7280;
-}
-
+/* Register link row */
 .mob-register {
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: #6b7280;
   text-align: center;
+  margin-top: 4px;
 }
 
 .mob-reg-link {
@@ -614,10 +710,12 @@ html, body { background: #FFF8F1; min-height: 100%; }
   border: none;
   padding: 0;
   color: #FF6600;
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 2px;
   font-family: 'Inter', sans-serif;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }

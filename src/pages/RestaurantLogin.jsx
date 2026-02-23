@@ -85,40 +85,82 @@ function EfficiencyCard() {
 // ── Mobile Layout ─────────────────────────────────────────────────────
 function MobileView({ loginEmail, setLoginEmail, loginPassword, setLoginPassword,
   showPassword, setShowPassword, loginError, isLoading, handleSignIn, navigate }) {
+  const [formFocused, setFormFocused] = useState(false);
+
+  const handleFormFocus = () => setFormFocused(true);
+  const handleFormBlur = (e) => {
+    // Only collapse if focus truly leaves the form (not just tabbing between fields)
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setFormFocused(false);
+    }
+  };
+
   return (
-    <div className="mob-wrap">
-      <div className="mob-header">
-        <img src="/Myezz_logo.svg" alt="MyEzz" className="mob-logo" />
-        <h1 className="mob-title">Welcome Back,<br />Partner!</h1>
+    <div className={`mob-screen${formFocused ? ' mob-focused' : ''}`}>
+      {/* Top: chef photo — fades out when keyboard opens */}
+      <div className="mob-image-wrap">
+        <img src="/login.png" alt="Restaurant kitchen" className="mob-image" />
       </div>
-      <form className="mob-form" onSubmit={handleSignIn}>
-        <input
-          type="text" placeholder="Email / Username"
-          value={loginEmail} onChange={e => setLoginEmail(e.target.value)} required
-        />
-        <div className="mob-pw-wrap">
+
+      {/* Bottom: scrollable white sheet */}
+      <div className="mob-sheet">
+        <img src="/Myezz_logo.svg" alt="MyEzz" className="mob-logo" />
+        <h1 className="mob-title">Welcome Back</h1>
+        <p className="mob-subtitle">Manage your kitchen operations effortlessly.</p>
+
+        <form
+          className="mob-form"
+          onSubmit={handleSignIn}
+          onFocus={handleFormFocus}
+          onBlur={handleFormBlur}
+        >
           <input
-            type={showPassword ? "text" : "password"} placeholder="Password"
-            value={loginPassword} onChange={e => setLoginPassword(e.target.value)} required
+            type="text"
+            placeholder="Email / Username"
+            value={loginEmail}
+            onChange={e => setLoginEmail(e.target.value)}
+            required
+            autoComplete="username"
           />
-          <button type="button" className="mob-eye"
-            onClick={() => setShowPassword(p => !p)}
-            style={{ color: '#475569' }}
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+
+          <div className="mob-pw-wrap">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={loginPassword}
+              onChange={e => setLoginPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
+            <button
+              type="button"
+              className="mob-eye"
+              onClick={() => setShowPassword(p => !p)}
+              aria-label="Toggle password"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+
+          <label className="mob-remember">
+            <input type="checkbox" />
+            <span>Remember me</span>
+          </label>
+
+          {loginError && <p className="mob-error">{loginError}</p>}
+
+          <button type="submit" className="mob-signin-btn" disabled={isLoading}>
+            {isLoading ? <Loader2 size={18} className="spin-anim" /> : "Sign In"}
           </button>
-        </div>
-        {loginError && <p className="mob-error">{loginError}</p>}
-        <button type="submit" className="mob-signin-btn" disabled={isLoading}>
-          {isLoading ? <Loader2 size={18} className="spin-anim" /> : "Sign In"}
-        </button>
-        <p className="mob-register">
-          New restaurant?{" "}
-          <button type="button" onClick={() => navigate("/register")} className="mob-reg-link">
-            Register here
-          </button>
-        </p>
-      </form>
+
+          <p className="mob-register">
+            New restaurant?{" "}
+            <button type="button" onClick={() => navigate("/register")} className="mob-reg-link">
+              Register here
+            </button>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
