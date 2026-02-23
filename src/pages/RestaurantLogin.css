@@ -483,7 +483,8 @@ html, body { background: #FFF8F1; min-height: 100%; }
   display: flex;
   flex-direction: column;
   position: relative;
-  z-index: 1;           /* above canvas (z-index:0) */
+  z-index: 1;
+  background: #fff;   /* image transparency dissolves into white = seamless blend */
 }
 
 /* ── Top: photo ──────────────────────────────────────────────── */
@@ -493,18 +494,31 @@ html, body { background: #FFF8F1; min-height: 100%; }
   min-height: 160px;
   flex-shrink: 0;
   overflow: hidden;
-  /* Gradient mask: image fades seamlessly into white sheet */
-  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  position: relative;
   transition: height 0.35s ease, min-height 0.35s ease;
+}
+
+/* Subtle dark scrim at the bottom of the image */
+.mob-image-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 55%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.18) 100%);
+  pointer-events: none;
 }
 
 .mob-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 15%;  /* keep face visible */
+  object-position: center 15%;
   display: block;
+  /* Mask on img only — fades photo to transparent without affecting ::after scrim */
+  -webkit-mask-image: linear-gradient(to bottom, black 25%, transparent 92%);
+  mask-image: linear-gradient(to bottom, black 25%, transparent 92%);
 }
 
 /* ── Sheet: scrollable so Sign In is always reachable ───────────── */
@@ -512,7 +526,7 @@ html, body { background: #FFF8F1; min-height: 100%; }
   flex: 1;
   background: #ffffff;
   border-radius: 24px 24px 0 0;
-  margin-top: -24px;
+  margin-top: -32px;   /* pull sheet up over the dissolved image edge */
   padding: 20px 24px 36px;
   display: flex;
   flex-direction: column;
@@ -679,23 +693,41 @@ html, body { background: #FFF8F1; min-height: 100%; }
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #FF6600, #FF8C00);
+  padding: 17px 14px;  /* +4px taller */
+  /* Inner highlight: lighter orange on top, standard orange below */
+  background: linear-gradient(
+    180deg,
+    #FF7A1A 0%,
+    #FF6600 40%,
+    #E85C00 100%
+  );
   color: #fff;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 800;
   font-family: 'Inter', sans-serif;
+  letter-spacing: 0.02em;
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(255,102,0,0.35);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.18) inset,  /* inner top highlight */
+    0 6px 20px rgba(255,102,0,0.45),         /* stronger outer shadow */
+    0 2px 4px rgba(200,70,0,0.3);
   margin-top: 4px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  transition: box-shadow 0.15s, transform 0.1s, background 0.15s;
 }
 
 .mob-signin-btn:disabled { opacity: 0.6; }
-.mob-signin-btn:active { transform: scale(0.98); }
+
+.mob-signin-btn:active {
+  background: linear-gradient(180deg, #E85C00 0%, #D45200 100%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.1) inset,
+    0 2px 8px rgba(200,70,0,0.35);
+  transform: scale(0.985) translateY(1px);
+}
 
 /* Register link row */
 .mob-register {
@@ -718,4 +750,31 @@ html, body { background: #FFF8F1; min-height: 100%; }
   font-family: 'Inter', sans-serif;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Mobile Footer ───────────────────────────────────────────── */
+.mob-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px 20px;
+  font-size: 0.73rem;
+  color: #9ca3af;
+  background: #fff;
+  position: relative;
+  z-index: 2;
+  flex-wrap: wrap;
+}
+
+.mob-footer a {
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.mob-footer a:hover { color: #FF6600; }
+
+.mob-footer-dot {
+  color: #d1d5db;
 }

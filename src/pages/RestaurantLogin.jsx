@@ -161,6 +161,15 @@ function MobileView({ loginEmail, setLoginEmail, loginPassword, setLoginPassword
           </p>
         </form>
       </div>
+
+      {/* Minimal sticky footer */}
+      <footer className="mob-footer">
+        <span>© 2026 MyEzz</span>
+        <span className="mob-footer-dot">·</span>
+        <a href="https://myezzofficial.netlify.app/about" target="_blank" rel="noopener noreferrer">About</a>
+        <span className="mob-footer-dot">·</span>
+        <a href="https://myezzofficial.netlify.app/contact" target="_blank" rel="noopener noreferrer">Contact</a>
+      </footer>
     </div>
   );
 }
