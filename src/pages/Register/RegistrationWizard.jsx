@@ -30,6 +30,7 @@ export default function RegistrationWizard() {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(true);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
@@ -198,8 +199,8 @@ export default function RegistrationWizard() {
 
       if (insertError) throw new Error(insertError.message);
 
-      // 3. Done — redirect to login
-      navigate('/login');
+      // 3. Done — show success modal instead of immediately redirecting
+      setShowSuccessModal(true);
 
     } catch (err) {
       console.error('Registration submit failed:', err);
@@ -244,6 +245,35 @@ export default function RegistrationWizard() {
                   onClick={() => setShowModal(false)}
                 >
                   Got It, Let&#39;s Continue
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ===== SUCCESS MODAL ===== */}
+      <AnimatePresence>
+        {showSuccessModal && (
+          <motion.div
+            className={styles.modalBackdrop}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className={styles.modalCard} style={{ textAlign: 'center', padding: '40px 24px' }}>
+              <CheckCircle2 size={64} color="#16A34A" style={{ margin: '0 auto 16px' }} />
+              <h2 className={styles.modalTitle} style={{ fontSize: '1.75rem', marginBottom: '12px' }}>SUBMITTED</h2>
+              <p className={styles.modalSubtitle} style={{ fontSize: '1rem', lineHeight: '1.5' }}>
+                You will receive a confirmation message within 24-48 hours on your mail.
+              </p>
+              <div className={styles.modalFooter} style={{ marginTop: '24px' }}>
+                <button
+                  className={styles.modalBtn}
+                  onClick={() => navigate('/login')}
+                  style={{ width: '100%', maxWidth: '200px', margin: '0 auto' }}
+                >
+                  OK
                 </button>
               </div>
             </div>
